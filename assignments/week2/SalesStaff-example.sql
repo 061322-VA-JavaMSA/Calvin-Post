@@ -13,7 +13,7 @@ id serial primary key,
 f_name varchar(20) not null,
 l_name varchar(20) not null,
 office_id integer references offices(id),
-dob date not null,
+dob date not null
 );
 
 -- customer
