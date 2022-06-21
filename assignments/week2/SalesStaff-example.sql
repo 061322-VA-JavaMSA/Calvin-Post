@@ -1,3 +1,6 @@
+--drop tables if exist
+drop table if exists sales_rep, customers, staff, offices;
+
 --office
 create table offices(
 id serial primary key,
