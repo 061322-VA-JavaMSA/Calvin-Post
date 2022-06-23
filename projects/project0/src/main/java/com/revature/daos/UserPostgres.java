@@ -1,6 +1,5 @@
 package com.revature.daos;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,14 +8,20 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.revature.Driver;
 import com.revature.models.User;
 import com.revature.util.ConnectionUtil;
 
 public class UserPostgres implements UserDAO {
+	
+	private static Logger log = LogManager.getLogger(UserPostgres.class);
 
 	@Override
-	public User newUser(User u) {
-		String sql = "insert into users (username, password, first_name, last_name) values (?, ?, ?, ?) returning id;";
+	public User createUser(User u) {
+		String sql = "insert into users (username, password, first_name, last_name) values (?, ?, ?, ?) returning id, level;";
 		try (Connection c = ConnectionUtil.getConnectionFromFile()) {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, u.getUsername());
@@ -27,9 +32,11 @@ public class UserPostgres implements UserDAO {
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) {
 				u.setId(rs.getInt("id"));
+				u.setLevel(rs.getInt("level"));
+				log.info("User " + u.getUsername() + " was created.");
 			}
 		} catch (SQLException e) {
-			System.out.println("Unable to create new user.");
+			log.error("Failed to create user " + u.getUsername() + "." + e.getMessage());
 		}
 		return u;
 	}
@@ -96,6 +103,28 @@ public class UserPostgres implements UserDAO {
 	public boolean updateUserById(int id) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public boolean deleteUserById(int id) {
+		String sql = "delete from users where id = ?;";
+		int rowsChanged = -1;
+		
+		try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setInt(1, id);
+			
+			rowsChanged = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			return false;
+		}
+		
+		if (rowsChanged < 1) {
+			return false;
+		}
+		
+		return true;
 	}
 
 }
