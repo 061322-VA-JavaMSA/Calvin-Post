@@ -37,34 +37,5 @@ public class AuthService {
 			return new User();
 		}
 	}
-
-	public User createUser(Scanner s) {
-		System.out.flush();
-
-		User u = new User();
-
-		System.out.println("Please fill in all fields");
-		System.out.print("Username: ");
-		u.setUsername(s.nextLine());
-		System.out.print("Password: ");
-		u.setPassword(s.nextLine());
-		System.out.print("First name: ");
-		u.setFirstName(s.nextLine());
-		System.out.print("Last name: ");
-		u.setLastName(s.nextLine());
-
-		u = ud.createUser(u);
-
-//		String street;
-//		String state;
-//		String zip;
-
-		if (u.getId() == 0) {
-			System.out.println("User exists. Unable to create user.");
-			return null;
-		}
-
-		System.out.println("User created successfully.");
-		return u;
-	}
+	
 }
