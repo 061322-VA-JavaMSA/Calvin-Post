@@ -1,7 +1,5 @@
 package com.revature;
 
-import java.util.Scanner;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,10 +9,10 @@ import com.revature.services.ItemService;
 import com.revature.services.OfferService;
 import com.revature.services.PaymentService;
 import com.revature.services.UserService;
+import com.revature.util.Util;
 
 public class Driver {
 
-	static Scanner scan;
 	static AuthService as;
 	static UserService us;
 	static ItemService is;
@@ -32,9 +30,10 @@ public class Driver {
 		 * fire (delete) employee
 		 */
 
-		scan = new Scanner(System.in);
 		as = new AuthService();
 		us = new UserService();
+		is = new ItemService();
+		os = new OfferService();
 		activeUser = new User();
 
 		while (true) {
@@ -61,7 +60,7 @@ public class Driver {
 				break;
 
 			default:
-				System.out.println("Invalid input.");
+				Util.println("Invalid input.");
 
 			}
 
@@ -87,28 +86,26 @@ public class Driver {
 	private static void mainMenu() {
 		while (activeUser.getLevel() == 0) {
 
-			System.out.println("Welcome to Project0!");
-			System.out.println("Please select an option \n 1: Register\n 2: Sign in\n 3: Quit");
-			String choice = scan.nextLine();
+			Util.println("Welcome to Project0!");
+			Util.println("Please select an option \n 1: Register\n 2: Sign in\n 3: Quit");
+			String choice = Util.in.nextLine();
 			switch (choice) {
 
 			case "1":
-				activeUser = us.createUser(scan);
-				System.out.println(activeUser);
+				activeUser = us.createUser();
+				Util.println(activeUser);
 				break;
 
 			case "2":
-				activeUser = as.login(scan);
-				System.out.println(activeUser);
+				activeUser = as.login();
+				Util.println(activeUser);
 				break;
 
 			case "3":
-				System.out.println("Goodbye!");
-				scan.close();
-				System.exit(0);
+				Util.exit();
 
 			default:
-				System.out.println("Invalid input.");
+				Util.println("Invalid input.");
 			}
 		}
 	}
@@ -116,17 +113,17 @@ public class Driver {
 	private static void customerMenu() {
 		while (activeUser.getLevel() == 1) {
 
-			System.out.println("Hello, " + activeUser.getFirstName() + "!");
-			System.out.println("Please select an option\n 1: Browse Games\n 2: My Games\n 3: Payments\n 4: Sign out");
-			String choice = scan.nextLine();
+			Util.println("Hello, " + activeUser.getFirstName() + "!");
+			Util.println("Please select an option\n 1: Browse Games\n 2: Owned Games\n 3: Payments\n 4: Sign out");
+			String choice = Util.in.nextLine();
 			switch (choice) {
 
 			case "1":
-				
+				is.viewAvailableItems(activeUser);;
 				break;
 
 			case "2":
-				
+				is.viewOwnedItemsByUser(activeUser);
 				break;
 
 			case "3":
@@ -138,34 +135,33 @@ public class Driver {
 				break;
 
 			default:
-
+				Util.println("Invalid input.");
 			}
 		}
 	}
 
 	private static void employeeMenu() {
-		while (activeUser == null) {
+		while (activeUser.getLevel() == 2) {
 
-			System.out.println("Welcome to Project0!");
-			System.out.println("Please select an option \n 1: Register\n 2: Sign in\n 3: Quit");
-			String choice = scan.nextLine();
+			Util.println("Welcome to Project0!");
+			Util.println("Please select an option \n 1: Browse Games\n 2: Sign in\n 3: Quit");
+			String choice = Util.in.nextLine();
 			switch (choice) {
 
 			case "1":
-				activeUser = us.createUser(scan);
-				System.out.println(activeUser);
+				is.viewAvailableItems(activeUser);
 				break;
 
 			case "2":
-				activeUser = as.login(scan);
-				System.out.println(activeUser);
+				activeUser = as.login();
+				Util.println(activeUser);
 				break;
 
 			case "3":
-				exit();
+				Util.exit();
 
 			default:
-				System.out.println("Invalid input.");
+				Util.println("Invalid input.");
 			}
 		}
 	}
@@ -173,46 +169,34 @@ public class Driver {
 	private static void managerMenu() {
 		while (activeUser == null) {
 
-			System.out.println("Welcome to Project0!");
-			System.out.println("Please select an option \n -1: Register\n -2: Sign in\n - 3: Quit");
-			String choice = scan.nextLine();
+			Util.println("Welcome to Project0!");
+			Util.println("Please select an option \n -1: Register\n -2: Sign in\n - 3: Quit");
+			String choice = Util.in.nextLine();
 			switch (choice) {
 
 			case "1":
-				activeUser = us.createUser(scan);
-				System.out.println(activeUser);
+				activeUser = us.createUser();
+				Util.println(activeUser);
 				break;
 
 			case "2":
-				activeUser = as.login(scan);
-				System.out.println(activeUser);
+				activeUser = as.login();
+				Util.println(activeUser);
 				break;
 
 			case "3":
-				exit();
+				Util.exit();
 
 			default:
-				System.out.println("Invalid input.");
+				Util.println("Invalid input.");
 			}
 		}
 	}
 
 	private static void signOut() {
-		System.out.println("User " + activeUser.getUsername() + " signed out.");
-		pause();
+		Util.println("User " + activeUser.getUsername() + " signed out.");
+		Util.pause();
 		activeUser = new User();
 	}
-
-	private static void pause() {
-		System.out.print("Press \"ENTER\" to continue...");
-		scan.nextLine();
-		System.out.flush();
-	}
-
-	private static void exit() {
-		System.out.println("Goodbye!");
-		pause();
-		scan.close();
-		System.exit(0);
-	}
+	
 }

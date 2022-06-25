@@ -1,23 +1,22 @@
 package com.revature.services;
 
-import java.util.Scanner;
-
 import com.revature.daos.UserDAO;
 import com.revature.daos.UserPostgres;
 import com.revature.exceptions.LoginException;
 import com.revature.models.User;
+import com.revature.util.Util;
 
 public class AuthService {
 
 	private UserDAO ud = new UserPostgres();
 
-	public User login(Scanner s) {
-		System.out.flush();
+	public User login() {
+		Util.clear();
 
 		System.out.print("Username: ");
-		String username = s.nextLine();
+		String username = Util.in.nextLine();
 		System.out.print("Password: ");
-		String password = s.nextLine();
+		String password = Util.in.nextLine();
 
 		try {
 			if (username == null || password == null) {
