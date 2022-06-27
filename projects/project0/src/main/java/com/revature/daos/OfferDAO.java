@@ -8,8 +8,6 @@ import com.revature.models.User;
 
 public interface OfferDAO {
 
-	Offer getOfferByItemUserKey(Item i, User u);
-
 	List<Offer> getOffersByItem(Item i);
 
 	List<Offer> getOffersByUser(User u);
@@ -18,7 +16,7 @@ public interface OfferDAO {
 	
 	boolean createOffer(Offer o);
 
-	boolean updateOffer(Offer o);
+	boolean rejectOffer(Offer o);
 
-	boolean acceptOfferUpdate(Offer o);
+	List<Offer> acceptOffer(Offer o);
 }

@@ -10,6 +10,7 @@ public class Util {
 	public static Scanner in = new Scanner(System.in);
 	public static void clear() {
 		System.out.flush();
+		banner();
 	}
 	
 	public static void pause() {
@@ -30,6 +31,30 @@ public class Util {
 		System.out.println();
 	}
 	
+	public static void println(int n) {
+		System.out.print(String.format("%0" + n + "d", 0).replace("0", "\n"));
+	}
+	
+	public static void banner() {
+		Table.row("    ////             //         //        //    ////////////      ////    ");
+		Table.row("  ///  ///          ////        ///      ///    ////////////    ///  ///  ");
+		Table.row(" ///    ///        //  //       ////    ////    //             ///    /// ");
+		Table.row("//                //    //      // //  // //    //             ///     ///");
+		Table.row("//               ///    ///     //  ////  //    ///////        ////       ");
+		Table.row("//     /////    ////////////    //   //   //    ///////          //////   ");
+		Table.row("//     /////    ////////////    //        //    //                    /// ");
+		Table.row(" ///     ///    //        //    //        //    //            ///     /// ");
+		Table.row("  ///  ///      //        //    //        //    ////////////   ///   ///  ");
+		Table.row("   //////       //        //    //        //    ////////////      ////    ");
+		println();
+		hr();
+		println();
+	}
+	
+	public static void hr() {
+		System.out.println(String.format("%0" + 80 + "d", 0).replace("0", "*"));
+	}
+	
 	public static boolean isDouble(String s) {
 		String regex = ".0123456789";
 		for(char c : s.toCharArray()) {
@@ -44,6 +69,11 @@ public class Util {
 			if(regex.indexOf(c) == -1) return false;
 		}
 		return true;
+	}
+	
+	public static void invalid() {
+		Util.println("Invalid input.");
+		pause();
 	}
 
 	public static void exit() {

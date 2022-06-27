@@ -18,7 +18,7 @@ public class OfferPostgres implements OfferDAO {
 	// not working
 	@Override
 	public List<Offer> getOffersByItem(Item i) {
-		String sql = "select created_on, status, amount, user_id from offers where item_id = ? order by amount desc;";
+		String sql = "select * from (select created_on, status, amount, item_id, user_id, username from offers join users on user_id = id) o where item_id = ?;";
 		List<Offer> offers= new ArrayList<>();
 		
 		try (Connection c = ConnectionUtil.getConnectionFromFile()) {
@@ -28,7 +28,7 @@ public class OfferPostgres implements OfferDAO {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				Offer o = new Offer();
-				o.setDate(rs.getDate("date").toLocalDate());
+				o.setDate(rs.getDate("created_on").toLocalDate());
 				o.setStatus(rs.getString("status"));
 				o.setAmount(rs.getDouble("amount"));
 				o.setItem(i);
@@ -41,7 +41,7 @@ public class OfferPostgres implements OfferDAO {
 			}
 			
 		} catch (SQLException e) {
-			
+			e.printStackTrace();
 		}
 		return offers;
 	}
@@ -79,34 +79,30 @@ public class OfferPostgres implements OfferDAO {
 	}
 
 	@Override
-	public boolean updateOffer(Offer o) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean acceptOfferUpdate(Offer o) {
+	public List<Offer> acceptOffer(Offer o) {
 		String sql = "begin;update offers set status = 'rejected' where item_id = ? and user_id <> ?; update offers set status = 'accepted' where item_id = ? and user_id = ?; commit;";
+		int itemId = o.getItem().getId();
+		int userId = o.getUser().getId();
 		
 		try (Connection c = ConnectionUtil.getConnectionFromFile()) {
 			
 			PreparedStatement ps = c.prepareStatement(sql);
-			int itemId = o.getItem().getId();
-			int userId = o.getUser().getId();
 			ps.setInt(1, itemId);
 			ps.setInt(2, userId);
 			ps.setInt(3, itemId);
 			ps.setInt(4, userId);
 			
-			int rowsChanged = -1;
+			ps.executeUpdate();
 			
-			rowsChanged = ps.executeUpdate();
-			return rowsChanged < 1 ? false : true;
+			
 			
 		} catch (SQLException e) {
-			
+			e.printStackTrace();
 		}
-		return false;
+		
+		Item i = new Item();
+		i.setId(itemId);
+		return this.getOffersByItem(i);
 	}
 
 	// not working
@@ -139,12 +135,6 @@ public class OfferPostgres implements OfferDAO {
 		}
 		return offers;
 	}
-	
-	@Override
-	public Offer getOfferByItemUserKey(Item i, User u) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public boolean createOffer(Offer o) {
@@ -163,6 +153,27 @@ public class OfferPostgres implements OfferDAO {
 		} catch (SQLException e) {
 			return false;
 		}
+	}
+
+	@Override
+	public boolean rejectOffer(Offer o) {
+		String sql = "update offers set status = 'rejected' where user_id = ? and item_id = ?;";
+		int rowsChanged = -1;
+		
+		try(Connection c = ConnectionUtil.getConnectionFromFile()) {
+			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setInt(1, o.getUser().getId());
+			ps.setInt(2, o.getItem().getId());
+			
+			rowsChanged = ps.executeUpdate();
+			if(rowsChanged > 0) {
+				o.setStatus("rejected");
+				return true;
+			}
+		} catch(SQLException e) {
+			return false;
+		}
+		return false;
 	}
 
 }

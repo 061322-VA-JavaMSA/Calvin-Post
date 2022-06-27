@@ -35,6 +35,8 @@ public class Driver {
 		is = new ItemService();
 		os = new OfferService();
 		activeUser = new User();
+		
+		is.updateNewItemStatus();
 
 		while (true) {
 			switch (activeUser.getLevel()) {
@@ -85,7 +87,7 @@ public class Driver {
 
 	private static void mainMenu() {
 		while (activeUser.getLevel() == 0) {
-
+			Util.clear();
 			Util.println("Welcome to Project0!");
 			Util.println("Please select an option \n 1: Register\n 2: Sign in\n 3: Quit");
 			String choice = Util.in.nextLine();
@@ -112,18 +114,17 @@ public class Driver {
 
 	private static void customerMenu() {
 		while (activeUser.getLevel() == 1) {
-
-			Util.println("Hello, " + activeUser.getFirstName() + "!");
-			Util.println("Please select an option\n 1: Browse Games\n 2: Owned Games\n 3: Payments\n 4: Sign out");
+			greeting();
+			Util.println(" 1: Browse Games\n 2: Owned Games\n 3: Payments\n 4: Sign out");
 			String choice = Util.in.nextLine();
 			switch (choice) {
 
 			case "1":
-				is.viewAvailableItems(activeUser);;
+				is.viewItems(activeUser);;
 				break;
 
 			case "2":
-				is.viewOwnedItemsByUser(activeUser);
+				is.viewOwnedItems(activeUser);
 				break;
 
 			case "3":
@@ -135,21 +136,20 @@ public class Driver {
 				break;
 
 			default:
-				Util.println("Invalid input.");
+				Util.invalid();
 			}
 		}
 	}
 
 	private static void employeeMenu() {
 		while (activeUser.getLevel() == 2) {
-
-			Util.println("Welcome to Project0!");
-			Util.println("Please select an option \n 1: Browse Games\n 2: Sign in\n 3: Quit");
+			greeting();
+			Util.println(" 1: Browse Games\n 2: Sign in\n 3: Quit");
 			String choice = Util.in.nextLine();
 			switch (choice) {
 
 			case "1":
-				is.viewAvailableItems(activeUser);
+				is.viewItems(activeUser);
 				break;
 
 			case "2":
@@ -161,16 +161,15 @@ public class Driver {
 				Util.exit();
 
 			default:
-				Util.println("Invalid input.");
+				Util.invalid();
 			}
 		}
 	}
 
 	private static void managerMenu() {
 		while (activeUser == null) {
-
-			Util.println("Welcome to Project0!");
-			Util.println("Please select an option \n -1: Register\n -2: Sign in\n - 3: Quit");
+			greeting();
+			Util.println(" -1: Register\n -2: Sign in\n - 3: Quit");
 			String choice = Util.in.nextLine();
 			switch (choice) {
 
@@ -188,9 +187,13 @@ public class Driver {
 				Util.exit();
 
 			default:
-				Util.println("Invalid input.");
+				Util.invalid();
 			}
 		}
+	}
+	
+	private static void greeting() {
+		Util.println("Please select an option");
 	}
 
 	private static void signOut() {
