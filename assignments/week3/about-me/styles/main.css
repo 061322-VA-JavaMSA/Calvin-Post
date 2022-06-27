@@ -23,6 +23,7 @@ nav {
     background-color: rgb(100, 100, 100);
     color: white;
     border-radius: 20px;
+    text-align: center;
 }
 
 nav ul {
@@ -51,6 +52,23 @@ main {
     padding: 10px;
     border-radius: 20px;
     margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+main div {
+    max-width: 100%;
+    overflow: hidden;
+}
+div div {
+    max-width: 50%;
+    float: left;
+    padding: 10px;
+}
+
+img {
+    max-width: 100%;
+    max-height: 500px;
+    border-radius: 20px;
 }
 
 #response {
@@ -58,7 +76,7 @@ main {
 }
 
 footer {
-    background-color: rgba(0, 0, 0, 30%);
+    background-color: rgba(0, 0, 0, 50%);
     border-radius: 20px;
     color: aqua;
     padding: 30px;
