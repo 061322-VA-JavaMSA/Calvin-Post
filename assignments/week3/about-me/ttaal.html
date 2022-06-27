@@ -5,27 +5,10 @@
     <title>Two Truths and a Lie - Calvin Post</title>
     <link rel="stylesheet" type="text/css" href="./styles/main.css" />
     <script>
-        /*
-        function myFunction() {
-            var choice = document.getElementsByName('ttaal');
-            var res = document.getElementById("response");
-            for (i = 0; i < choice.length; i++) {
-                if (choice[i].checked) {
-                    if (choice[i].value == "false") {
-                        res.textContent = "Correct answer!";
-                        res.style.color = "green";
-                    } else {
-                        res.textContent = "Incorrect answer!";
-                        res.style.color = "red";
-                    }
-                }
-            }
-        } */
-
         function myFunction() {
             var h = document.getElementById("response");
             h.style.visibility = "visible";
-            if(document.getElementById("r1").checked) {
+            if (document.getElementById("r1").checked) {
                 h.textContent = "Correct answer!";
                 h.style.color = "green";
             } else {
