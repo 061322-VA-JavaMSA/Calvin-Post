@@ -31,6 +31,33 @@ public class ItemPostgres implements ItemDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public List<Item> getItemsByStatus(String operator, String status){
+		String sql = "select * from items where status " + operator + " '" + status + "';";
+		List<Item> items = new ArrayList<>();
+		
+		try(Connection c = ConnectionUtil.getConnectionFromFile()) {
+			
+			Statement s = c.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			
+			while(rs.next()) {
+				Item i = new Item();
+				i.setId(rs.getInt("id"));
+				i.setName(rs.getString("name"));
+				i.setDescription(rs.getString("description"));
+				i.setStatus(rs.getString("status"));
+				i.setBalance(rs.getDouble("balance"));
+				
+				items.add(i);
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
+	}
 
 	@Override
 	public List<Item> getItems() {
@@ -98,8 +125,8 @@ public class ItemPostgres implements ItemDAO {
 	}
 
 	@Override
-	public List<Item> getOwnedItems(User u) {
-		String sql = "select id, name, description, balance from owned where user_id = ? order by name asc;";
+	public List<Item> getItemsByUser(User u) {
+		String sql = "select id, name, description, balance from items where user_id = ? order by name asc;";
 		List<Item> items = new ArrayList<>();
 		
 		try(Connection c = ConnectionUtil.getConnectionFromFile()) {
@@ -113,6 +140,7 @@ public class ItemPostgres implements ItemDAO {
 				i.setId(rs.getInt("id"));
 				i.setName(rs.getString("name"));
 				i.setDescription(rs.getString("description"));
+				i.setBalance(rs.getDouble("balance"));
 				i.setUser(u);
 				
 				items.add(i);
@@ -124,36 +152,29 @@ public class ItemPostgres implements ItemDAO {
 	}
 
 	@Override
-	public Item updateItemStatusById(int id, String status) {
-		String sql = "update items set status = ? where id = ?";
-		
+	public void updateItemOwnedStatus(Offer o) {
+		String sql = "begin; delete from offers where item_id = ?; update items set user_id = ?, balance = ?, status = 'owned' where id = ?; commit;";
 		try(Connection c = ConnectionUtil.getConnectionFromFile()) {
 			PreparedStatement ps = c.prepareStatement(sql);
-			ps.setString(1, status);
-			ps.setInt(2, id);
+			ps.setInt(1, o.getItem().getId());
+			ps.setInt(2, o.getUser().getId());
+			ps.setDouble(3, o.getAmount());
+			ps.setInt(4, o.getItem().getId());
 			
 			ps.executeUpdate();
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
-		return this.getItemById(id);
 	}
-
+	
 	@Override
-	public void moveItemToOwned(Item i, Offer o) {
-		String sql = "begin; delete from offers where item_id = ?; delete from items where id = ?; insert into owned (name, description, balance, user_id) values (?, ?, ?, ?); commit;";
+	public void updateItemBalance(Item i) {
+		String sql = "update items set balance = " + i.getBalance() + " where id = " + i.getId() + ";";
 		
 		try(Connection c = ConnectionUtil.getConnectionFromFile()) {
-			PreparedStatement ps = c.prepareStatement(sql);
-			ps.setInt(1, i.getId());
-			ps.setInt(2, i.getId());
-			ps.setString(3, i.getName());
-			ps.setString(4, i.getDescription());
-			ps.setDouble(5, o.getAmount());
-			ps.setInt(6, o.getUser().getId());
-			
-			ps.executeUpdate();
+			Statement s = c.createStatement();
+			s.execute(sql);
 			
 		} catch(SQLException e) {
 			e.printStackTrace();

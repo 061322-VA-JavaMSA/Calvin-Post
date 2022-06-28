@@ -5,6 +5,7 @@ import java.util.List;
 import com.revature.daos.ItemDAO;
 import com.revature.daos.ItemPostgres;
 import com.revature.models.Item;
+import com.revature.models.Payment;
 import com.revature.models.User;
 import com.revature.util.Table;
 import com.revature.util.Util;
@@ -13,6 +14,7 @@ public class ItemService {
 
 	private ItemDAO id = new ItemPostgres();
 	private OfferService os = new OfferService();
+	private PaymentService ps = new PaymentService();
 
 	public void updateNewItemStatus() {
 		id.updateNewItemStatus();
@@ -37,7 +39,7 @@ public class ItemService {
 	}
 
 	public void viewOwnedItems(User u) {
-		List<Item> items = id.getOwnedItems(u);
+		List<Item> items = id.getItemsByUser(u);
 
 		Util.clear();
 		Table.header(u.getFirstName() + "'s Games");
@@ -55,8 +57,13 @@ public class ItemService {
 		if (choice.equals("")) {
 
 		} else if (Util.isInt(choice)) {
-
-			this.viewOwnedItems(u);
+			int c = Integer.parseInt(choice) - 1;
+			if (c > -1 && c < items.size()) {
+				this.viewOwnedItem(items.get(c));
+			} else {
+				Util.invalid();
+				this.viewOwnedItems(u);
+			}
 		} else {
 			Util.invalid();
 			this.viewOwnedItems(u);
@@ -64,41 +71,52 @@ public class ItemService {
 
 	}
 
-	public void viewOwnedItem(Item i, User u) {
+	public void viewOwnedItem(Item i) {
+		List<Payment> payments = ps.getPaymentsByItem(i);
 		Util.clear();
 
-		Util.println(i.getName());
-		Util.println();
+		Table.title(i.getName());
+		Table.row(String.format("%-20s      $ %6.2f", "Remaining balance:", i.getBalance()));
+		Util.hr();
+		
+		Table.header(String.format("%-10s    %-6s    %10s", "Due Date", "Status", "Amount Due"));
+		for(Payment p : payments) {
+		Table.header(String.format("%-10s    %-6s      $ %6.2f", p.getDateDue().toString(), p.getStatus(), p.getAmountDue()));
+		}
 		Util.println(i.getDescription());
 
 		Util.println("\n\n\n");
 		Util.println("What would you like to do?");
-		Util.println(" 1. M");
+		Util.println(" 1. Make a payment");
+		String choice = Util.in.nextLine();
+		
+		//make payment
+		for(Payment p : payments) {
+			if(p.getStatus().equals("unpaid")) {
+				p.setStatus("paid");
+				ps.updatePaymentStatus(p);
+				i.setBalance(i.getBalance() - p.getAmountDue());
+				id.updateItemBalance(i);
+				break;
+			}
+		}
+		this.viewOwnedItem(i);
+		
 	}
 
 	public void viewItems(User u) {
-		List<Item> items = id.getItems();
-
+		boolean isEmployee = u.getLevel() > 1;
+		List<Item> items = isEmployee ? id.getItems() : id.getItemsByStatus("<>", "owned");
+		int line = 1;
 		Util.clear();
-		if (u.getLevel() > 1) {
-			int line = 1;
-			for (Item i : items) {
-				Util.println(" " + line + ". " + i.getName());
-				line++;
-			}
-		} else {
-			Util.println("Here's what we have in stock.    (* new item)");
-			int line = 1;
-			for (Item i : items) {
-				if (i.getStatus().equals("owned")) {
-					items.remove(i);
-				} else {
-					Util.print(i.getStatus().equals("new") ? "*" : " ");
-					Util.println(line + ". " + i.getName());
-					line++;
-				}
+		Table.row(isEmployee ? "All Games" : "In Stock Games");
 
-			}
+		for (Item i : items) {
+			String row = isEmployee ? "" : "";
+			Table.row(row);
+			Util.print(i.getStatus().equals("new") ? "*" : " ");
+			Util.println(line + ". " + i.getName());
+			line++;
 		}
 
 		Util.println("\n\n\n");

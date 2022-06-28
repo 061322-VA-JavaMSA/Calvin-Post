@@ -7,6 +7,8 @@ import com.revature.daos.ItemDAO;
 import com.revature.daos.ItemPostgres;
 import com.revature.daos.OfferDAO;
 import com.revature.daos.OfferPostgres;
+import com.revature.daos.PaymentDAO;
+import com.revature.daos.PaymentPostgres;
 import com.revature.models.Item;
 import com.revature.models.Offer;
 import com.revature.models.User;
@@ -17,6 +19,7 @@ public class OfferService {
 
 	private OfferDAO od = new OfferPostgres();
 	private ItemDAO id = new ItemPostgres();
+	private PaymentDAO pd = new PaymentPostgres();
 
 	public void addOffer(Item i, User u) {
 		Offer o = new Offer();
@@ -57,10 +60,15 @@ public class OfferService {
 		Util.hr();
 		Util.println();
 		Util.println("Select an offer and specify 'a' to accept or 'r' to reject. (ex: 2 a)");
-		Util.println("Press ENTER to return.");
+		Util.println("Press ENTER to return and commit changes.");
 		String selection = Util.in.nextLine();
 		if (selection.equals("")) {
-
+			for(Offer o: offers) {
+				if(o.getStatus().equals("accepted")) {
+					id.updateItemOwnedStatus(o);
+					pd.createPaymentsByItem(i);
+				}
+			}
 		} else {
 			String[] args = selection.split(" ");
 			if (args.length == 2) {
@@ -70,6 +78,7 @@ public class OfferService {
 						Offer o = offers.get(x);
 
 						if (args[1].equalsIgnoreCase("a")) {
+							i.setBalance(o.getAmount());
 							offers = od.acceptOffer(o);
 							this.viewOffersForItem(i);
 						} else if (args[1].equalsIgnoreCase("r")) {
@@ -88,12 +97,6 @@ public class OfferService {
 			} else {
 				Util.invalid();
 				this.viewOffersForItem(i);
-			}
-		}
-		for(Offer o: offers) {
-			if(o.getStatus().equals("accepted")) {
-				id.updateItemStatusById(i.getId(), "owned");
-				id.moveItemToOwned(i, o);
 			}
 		}
 	}

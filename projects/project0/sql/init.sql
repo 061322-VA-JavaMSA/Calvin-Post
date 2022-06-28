@@ -1,7 +1,7 @@
 /*
  * Init tables
  */
-drop table if exists payments, owned, offers, items, users;
+drop table if exists transactions, payments, offers, items, users cascade;
 
 -- users
 create table users(
@@ -19,7 +19,9 @@ id serial primary key,
 created_on date default current_date,
 status varchar(9) default 'new',
 name varchar(30),
-description text
+description text,
+balance numeric,
+user_id integer references users(id)
 );
 
 -- offers
@@ -32,21 +34,13 @@ user_id integer references users(id),
 primary key (item_id, user_id)
 );
 
--- owned items
-create table owned(
-id serial primary key,
-name varchar(30),
-description text,
-balance numeric,
-user_id integer references users(id)
-);
-
 -- payments
 create table payments(
 id serial primary key,
-created_on date default current_date,
-amount numeric not null,
-user_id integer references users(id)
+date_due date,
+amount_due numeric,
+status varchar(6) default 'unpaid',
+item_id integer references items(id)
 );
 
 /*
@@ -93,18 +87,18 @@ insert into offers (created_on, status, amount, item_id, user_id) values ('2022-
 insert into offers (created_on, status, amount, item_id, user_id) values ('2022-06-06', 'pending', 97.78, 8, 5);
 insert into offers (created_on, status, amount, item_id, user_id) values ('2022-06-08', 'pending', 30.82, 5, 3);
 
--- owned
-insert into owned (name, description, balance, user_id) values ('Summer Stock', 'Liver lacerat, mod-open', 29.69, 3);
-insert into owned (name, description, balance, user_id) values ('Road to Guantanamo, The', 'Bipol I currnt mixed-mod', 87.09, 9);
-insert into owned (name, description, balance, user_id) values ('Troll', 'Injury iliac artery', 57.82, 6);
-insert into owned (name, description, balance, user_id) values ('Parade, The (Parada)', 'Syphilitic keratitis', 37.63, 9);
-insert into owned (name, description, balance, user_id) values ('Adventures of Hajji Baba, The', 'Benign neo urinary NEC', 70.71, 2);
-insert into owned (name, description, balance, user_id) values ('You''re Gonna Miss Me', '1st deg burn arm-mult', 28.83, 7);
-insert into owned (name, description, balance, user_id) values ('Gift, The', 'Del w 2 deg lacerat-del', 54.54, 4);
-insert into owned (name, description, balance, user_id) values ('Cave of Forgotten Dreams', 'Unsp lym unsp xtrndl org', 27.12, 4);
-insert into owned (name, description, balance, user_id) values ('How I Unleashed World War II (Jak rozpetalem II wojne swiatowa)', 'Alchl gstritis w hmrhg', 55.11, 6);
-insert into owned (name, description, balance, user_id) values ('Get on the Bus', 'Poisoning-antitussives', 95.89, 6);
-
+-- owned items
+insert into items (name, description, balance, user_id) values ('Summer Stock', 'Liver lacerat, mod-open', 29.69, 3);
+insert into items (name, description, balance, user_id) values ('Road to Guantanamo, The', 'Bipol I currnt mixed-mod', 87.09, 9);
+insert into items (name, description, balance, user_id) values ('Troll', 'Injury iliac artery', 57.82, 6);
+insert into items (name, description, balance, user_id) values ('Parade, The (Parada)', 'Syphilitic keratitis', 37.63, 9);
+insert into items (name, description, balance, user_id) values ('Adventures of Hajji Baba, The', 'Benign neo urinary NEC', 70.71, 2);
+insert into items (name, description, balance, user_id) values ('You''re Gonna Miss Me', '1st deg burn arm-mult', 28.83, 7);
+insert into items (name, description, balance, user_id) values ('Gift, The', 'Del w 2 deg lacerat-del', 54.54, 4);
+insert into items (name, description, balance, user_id) values ('Cave of Forgotten Dreams', 'Unsp lym unsp xtrndl org', 27.12, 4);
+insert into items (name, description, balance, user_id) values ('How I Unleashed World War II', 'Alchl gstritis w hmrhg', 55.11, 6);
+insert into items (name, description, balance, user_id) values ('Get on the Bus', 'Poisoning-antitussives', 95.89, 6);
+/*
 -- payments
 insert into payments (created_on, amount, item_id) values ('2022-06-05', 48.58, 5);
 insert into payments (created_on, amount, item_id) values ('2022-04-28', 27.2, 9);
@@ -116,3 +110,4 @@ insert into payments (created_on, amount, item_id) values ('2022-01-15', 63.16, 
 insert into payments (created_on, amount, item_id) values ('2021-10-22', 24.96, 4);
 insert into payments (created_on, amount, item_id) values ('2022-01-28', 77.27, 8);
 insert into payments (created_on, amount, item_id) values ('2021-12-01', 45.31, 7);
+*/

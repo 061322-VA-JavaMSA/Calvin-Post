@@ -5,10 +5,6 @@ subtract payment amount from item balance
 commit;
 */
 
--- Auto-generated SQL script #202206231406
-DELETE FROM public.users
-	WHERE id=2 returning exists(select from users where id=2);
-
 -- Accept offer and reject all others on item/user ids
 begin;
 update offers 
@@ -46,17 +42,7 @@ as o
 where user_id = 2;
 
 -- select from offers for given item
-select * from (select
-	date,
-	status,
-	amount,
-	offers.user_id,
-	username,
-	item_id
-from offers
-join users on id = user_id)
-as o
-where item_id = 3;
+select * from (select created_on, status, amount, item_id, user_id, username from offers join users on user_id = id) o where item_id = 3;
 
 --select offers for given item
 
@@ -72,3 +58,5 @@ alter table items add created_at date default current_date;
 
 -- select available items
 select * from items where status <> 'sold' order by status desc, name asc;
+
+begin; delete from offers where item_id = 5; delete from items where id = 5; insert into owned (name, description, balance, user_id) values ('Wall, The (Die Wand)', 'Revision of Synth Sub in R Wrist Jt, Open Approach', 96.73, 1); commit;

@@ -10,17 +10,19 @@ public interface ItemDAO {
 
 	Item getItemById(int id);
 
-	List<Item> getOwnedItems(User u);
+	List<Item> getItemsByUser(User u);
+	
+	List<Item> getItemsByStatus(String operator, String status);
 
 	List<Item> getItems();
 
 	Item createItem(Item i);
-
-	Item updateItemStatusById(int id, String status);
 	
 	void updateNewItemStatus();
 	
-	void moveItemToOwned(Item i, Offer o);
+	void updateItemOwnedStatus(Offer o);
+	
+	void updateItemBalance(Item i);
 
 	boolean removeItemById(int id);
 }

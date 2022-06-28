@@ -34,6 +34,7 @@ public class Driver {
 		us = new UserService();
 		is = new ItemService();
 		os = new OfferService();
+		ps = new PaymentService();
 		activeUser = new User();
 		
 		is.updateNewItemStatus();
@@ -144,7 +145,7 @@ public class Driver {
 	private static void employeeMenu() {
 		while (activeUser.getLevel() == 2) {
 			greeting();
-			Util.println(" 1: Browse Games\n 2: Sign in\n 3: Quit");
+			Util.println(" 1: Browse Games\n 2: View Payments\n 3: Quit");
 			String choice = Util.in.nextLine();
 			switch (choice) {
 
@@ -153,8 +154,7 @@ public class Driver {
 				break;
 
 			case "2":
-				activeUser = as.login();
-				Util.println(activeUser);
+				ps.viewPayments();
 				break;
 
 			case "3":
@@ -167,20 +167,19 @@ public class Driver {
 	}
 
 	private static void managerMenu() {
-		while (activeUser == null) {
+		while (true) {
 			greeting();
-			Util.println(" -1: Register\n -2: Sign in\n - 3: Quit");
+			Util.println(" -1: Register\n -2: Create new employee account\n - 3: Quit");
 			String choice = Util.in.nextLine();
 			switch (choice) {
 
 			case "1":
-				activeUser = us.createUser();
-				Util.println(activeUser);
+//				activeUser = us.createUser();
+//				Util.println(activeUser);
 				break;
 
 			case "2":
-				activeUser = as.login();
-				Util.println(activeUser);
+				us.createEmployee();
 				break;
 
 			case "3":
