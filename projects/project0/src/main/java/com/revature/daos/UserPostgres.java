@@ -67,14 +67,14 @@ public class UserPostgres implements UserDAO {
 				u.setLastName(rs.getString("last_name"));
 			}
 		} catch (SQLException e) {
-			System.out.println("User not found.");
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		return u;
 	}
 	
 	@Override
 	public List<User> getUsers() {
-		String sql = "select * from users;";
+		String sql = "select * from users order by first_name asc, last_name asc;";
 		List<User> users = new ArrayList<>();
 		
 		try (Connection c = ConnectionUtil.getConnectionFromFile()) {
@@ -120,7 +120,7 @@ public class UserPostgres implements UserDAO {
 				users.add(u);
 			}
 		} catch (SQLException e) {
-			System.out.println("Unable to retrieve data.");
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		
 		return users;
@@ -144,6 +144,7 @@ public class UserPostgres implements UserDAO {
 			rowsChanged = ps.executeUpdate();
 			
 		} catch (SQLException e) {
+			log.error(e.getSQLState(), e.getMessage());
 			return false;
 		}
 		

@@ -11,6 +11,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.revature.Driver;
 import com.revature.models.Item;
 import com.revature.models.Payment;
 import com.revature.util.ConnectionUtil;
@@ -18,6 +22,7 @@ import com.revature.util.ConnectionUtil;
 public class PaymentPostgres implements PaymentDAO {
 	
 	private ItemDAO id = new ItemPostgres();
+	private static Logger log = LogManager.getLogger(PaymentPostgres.class);
 
 	@Override
 	public List<Payment> getPaymentsByItem(Item i) {
@@ -40,7 +45,7 @@ public class PaymentPostgres implements PaymentDAO {
 				payments.add(p);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		return payments;
 	}
@@ -62,26 +67,29 @@ public class PaymentPostgres implements PaymentDAO {
 				date = date.plusDays(7);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 	}
 	
 	@Override
-	public void updatePaymentStatus(Payment p) {
-		String sql = "update payments set status = '" + p.getStatus() + "' where id = " + p.getId() + ";";
+	public void updatePayment(Payment p) {
+		String sql = "update payments set status = ?, amount_due = ? where id = ?;";
 		
 		try(Connection c = ConnectionUtil.getConnectionFromFile()) {
-			Statement s = c.createStatement();
-			s.execute(sql);
+			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setString(1, p.getStatus());
+			ps.setDouble(2, p.getAmountDue());
+			ps.setInt(3, p.getId());
+			ps.executeUpdate();
 			
 		} catch(SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 	}
 	
 	@Override
 	public List<Payment> getPayments(){
-		String sql = "select * from payments;";
+		String sql = "select * from payments order by status desc, date_due asc;";
 		List<Payment> payments = new ArrayList<>();
 		
 		try(Connection c = ConnectionUtil.getConnectionFromFile()) {
@@ -101,7 +109,7 @@ public class PaymentPostgres implements PaymentDAO {
 			}
 			
 		} catch(SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		return payments;
 	}

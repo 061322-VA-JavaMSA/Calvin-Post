@@ -5,3 +5,12 @@
 22:33:27 [main] ERROR com.revature.daos.UserPostgres - Failed to create user cpost.ERROR: duplicate key value violates unique constraint "users_username_key"
   Detail: Key (username)=(cpost) already exists.
 00:06:03 [main] INFO  com.revature.daos.UserPostgres - User employee2 was created.
+11:50:14 [main] INFO  com.revature.daos.UserPostgres - User cpost was created.
+14:09:41 [main] ERROR com.revature.daos.UserPostgres - Failed to create user manager.ERROR: duplicate key value violates unique constraint "users_username_key"
+  Detail: Key (username)=(manager) already exists.
+17:53:40 [main] ERROR com.revature.daos.UserPostgres - Failed to create user .ERROR: new row for relation "users" violates check constraint "users_username_check"
+  Detail: Failing row contains (16, 2, , , , ).
+23:16:51 [main] ERROR com.revature.daos.ItemPostgres - 22023
+23:20:15 [main] ERROR com.revature.daos.ItemPostgres - 22023
+00:01:38 [main] INFO  com.revature.daos.UserPostgres - User cpost was created.
+00:28:01 [main] INFO  com.revature.daos.UserPostgres - User cpost was created.

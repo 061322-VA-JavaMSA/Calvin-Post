@@ -3,6 +3,8 @@ package com.revature.util;
 public class Table {
 
 	public static void title(String s) {
+		Util.clear();
+		Util.banner();
 		Util.hr();
 		Util.hr();
 		row(s);

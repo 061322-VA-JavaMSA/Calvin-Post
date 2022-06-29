@@ -8,12 +8,18 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.revature.Driver;
 import com.revature.models.Item;
 import com.revature.models.Offer;
 import com.revature.models.User;
 import com.revature.util.ConnectionUtil;
 
 public class ItemPostgres implements ItemDAO {
+	
+	private static Logger log = LogManager.getLogger(ItemPostgres.class);
 
 	@Override
 	public Item getItemById(int id) {
@@ -28,7 +34,7 @@ public class ItemPostgres implements ItemDAO {
 			Statement s = c.createStatement();
 			s.execute(sql);
 		} catch(SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 	}
 	
@@ -53,7 +59,7 @@ public class ItemPostgres implements ItemDAO {
 				items.add(i);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		
 		return items;
@@ -79,7 +85,7 @@ public class ItemPostgres implements ItemDAO {
 				items.add(i);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		return items;
 	}
@@ -98,7 +104,7 @@ public class ItemPostgres implements ItemDAO {
 				i.setId(rs.getInt("id"));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		
 //		Util.message(i.getName() + " was added successfully.", "New game added");
@@ -119,7 +125,7 @@ public class ItemPostgres implements ItemDAO {
 			rowsChanged = ps.executeUpdate();
 			return rowsChanged < 1 ? false : true;
 		} catch(SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		return false;
 	}
@@ -146,25 +152,24 @@ public class ItemPostgres implements ItemDAO {
 				items.add(i);
 			}
 		} catch(SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		return items;
 	}
 
 	@Override
 	public void updateItemOwnedStatus(Offer o) {
-		String sql = "begin; delete from offers where item_id = ?; update items set user_id = ?, balance = ?, status = 'owned' where id = ?; commit;";
+		String sql = "update items set user_id = ?, balance = ?, status = 'owned' where id = ?;";
 		try(Connection c = ConnectionUtil.getConnectionFromFile()) {
 			PreparedStatement ps = c.prepareStatement(sql);
-			ps.setInt(1, o.getItem().getId());
-			ps.setInt(2, o.getUser().getId());
-			ps.setDouble(3, o.getAmount());
-			ps.setInt(4, o.getItem().getId());
+			ps.setInt(1, o.getUser().getId());
+			ps.setDouble(2, o.getAmount());
+			ps.setInt(3, o.getItem().getId());
 			
 			ps.executeUpdate();
 			
 		} catch(SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 	}
 	
@@ -177,7 +182,7 @@ public class ItemPostgres implements ItemDAO {
 			s.execute(sql);
 			
 		} catch(SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 	}
 }

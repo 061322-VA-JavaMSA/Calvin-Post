@@ -9,6 +9,7 @@ import com.revature.services.ItemService;
 import com.revature.services.OfferService;
 import com.revature.services.PaymentService;
 import com.revature.services.UserService;
+import com.revature.util.Table;
 import com.revature.util.Util;
 
 public class Driver {
@@ -36,10 +37,10 @@ public class Driver {
 		os = new OfferService();
 		ps = new PaymentService();
 		activeUser = new User();
-		
+
 		is.updateNewItemStatus();
 
-		while (true) {
+		while (!activeUser.equals(null)) {
 			switch (activeUser.getLevel()) {
 
 			// Unregistered user
@@ -66,133 +67,124 @@ public class Driver {
 				Util.println("Invalid input.");
 
 			}
-
-			/*
-			 * 1st: - Register user - Create a new Account - Gather Name, Username, Password
-			 * - Check if username already exists (Service layer) - more validation - logic
-			 * to persist to a database - feedback of if operation was successful -
-			 * Cancel/Go back - Login
-			 */
-
-			/*
-			 * syso - 1 for register, 2 for login choice = sc.nextLn if/switch(choice){ 1 -
-			 * User u = new User() syso Name setter sc.nextLn syso username setter sc.nextLn
-			 * syso password setter sc.nextLn // check db if username already exists - call
-			 * to database for a username and see if it returns anything // persist to db
-			 * logic
-			 * 
-			 * }
-			 */
 		}
 	}
 
 	private static void mainMenu() {
-		while (activeUser.getLevel() == 0) {
-			Util.clear();
-			Util.println("Welcome to Project0!");
-			Util.println("Please select an option \n 1: Register\n 2: Sign in\n 3: Quit");
-			String choice = Util.in.nextLine();
-			switch (choice) {
+		Table.title("Calvin's Game Shop");
+		Util.println("Welcome to the Game Shop!");
+		Util.println("Please select an option \n 1: Register\n 2: Sign in\n 3: Quit");
+		String choice = Util.in.nextLine();
+		switch (choice) {
 
-			case "1":
-				activeUser = us.createUser();
-				Util.println(activeUser);
-				break;
+		case "1":
+			activeUser = us.createUser();
+			break;
 
-			case "2":
-				activeUser = as.login();
-				Util.println(activeUser);
-				break;
+		case "2":
+			activeUser = as.login();
+			break;
 
-			case "3":
-				Util.exit();
+		case "3":
+			Util.exit();
 
-			default:
-				Util.println("Invalid input.");
-			}
+		default:
+			Util.println("Invalid input.");
 		}
 	}
 
 	private static void customerMenu() {
-		while (activeUser.getLevel() == 1) {
-			greeting();
-			Util.println(" 1: Browse Games\n 2: Owned Games\n 3: Payments\n 4: Sign out");
-			String choice = Util.in.nextLine();
-			switch (choice) {
+		Table.title("Customer Menu");
+		greeting();
+		Util.println(" 1: Browse Games\n 2: Owned Games\n 3: Sign out\n 4: Quit");
+		String choice = Util.in.nextLine();
+		switch (choice) {
 
-			case "1":
-				is.viewItems(activeUser);;
-				break;
+		case "1":
+			is.viewItems(activeUser);
+			break;
 
-			case "2":
-				is.viewOwnedItems(activeUser);
-				break;
+		case "2":
+			is.viewOwnedItems(activeUser);
+			break;
 
-			case "3":
+		case "3":
+			signOut();
+			break;
 
-				break;
+		case "4":
+			Util.exit();
 
-			case "4":
-				signOut();
-				break;
-
-			default:
-				Util.invalid();
-			}
+		default:
+			Util.invalid();
 		}
 	}
 
 	private static void employeeMenu() {
-		while (activeUser.getLevel() == 2) {
-			greeting();
-			Util.println(" 1: Browse Games\n 2: View Payments\n 3: Quit");
-			String choice = Util.in.nextLine();
-			switch (choice) {
+		Table.title("Employee Menu");
+		greeting();
+		Util.println(" 1: Browse Games / Offers\n 2: View Payments\n 3: Sign Out\n 4: Quit");
+		String choice = Util.in.nextLine();
+		switch (choice) {
 
-			case "1":
-				is.viewItems(activeUser);
-				break;
+		case "1":
+			is.viewItems(activeUser);
+			break;
 
-			case "2":
-				ps.viewPayments();
-				break;
+		case "2":
+			ps.viewPayments();
+			break;
 
-			case "3":
-				Util.exit();
+		case "3":
+			signOut();
+			break;
 
-			default:
-				Util.invalid();
-			}
+		case "4":
+			Util.exit();
+
+		default:
+			Util.invalid();
 		}
 	}
 
 	private static void managerMenu() {
-		while (true) {
-			greeting();
-			Util.println(" -1: Register\n -2: Create new employee account\n - 3: Quit");
-			String choice = Util.in.nextLine();
-			switch (choice) {
+		Table.title("Manager Menu");
+		greeting();
+		Util.println(
+				" 1: View Employees\n 2: View Customers\n 3: Browse Games / Offers\n 4: View Payments\n 5: Sign Out\n 6: Quit");
+		String choice = Util.in.nextLine();
+		switch (choice) {
 
-			case "1":
-//				activeUser = us.createUser();
-//				Util.println(activeUser);
-				break;
+		case "1":
+			us.viewEmployees(activeUser);
+			break;
 
-			case "2":
-				us.createEmployee();
-				break;
+		case "2":
+			us.viewUsers();
+			break;
+			
+		case "3":
+			is.viewItems(activeUser);
+			break;
 
-			case "3":
-				Util.exit();
+		case "4":
+			ps.viewPayments();
+			break;
 
-			default:
-				Util.invalid();
-			}
+		case "5":
+			signOut();
+			break;
+
+		case "6":
+			Util.exit();
+
+		default:
+			Util.invalid();
 		}
 	}
-	
+
 	private static void greeting() {
-		Util.println("Please select an option");
+		Util.println("Hello, " + activeUser.getFirstName() + "! Please select an option.");
 	}
 
 	private static void signOut() {
@@ -200,5 +192,5 @@ public class Driver {
 		Util.pause();
 		activeUser = new User();
 	}
-	
+
 }

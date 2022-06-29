@@ -11,7 +11,7 @@ public interface PaymentDAO {
 	
 	void createPaymentsByItem(Item i);
 	
-	void updatePaymentStatus(Payment p);
+	void updatePayment(Payment p);
 	
 	List<Payment> getPayments();
 }

@@ -2,10 +2,12 @@ package com.revature.services;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.revature.daos.ItemDAO;
 import com.revature.daos.ItemPostgres;
 import com.revature.models.Item;
-import com.revature.models.Payment;
 import com.revature.models.User;
 import com.revature.util.Table;
 import com.revature.util.Util;
@@ -15,15 +17,15 @@ public class ItemService {
 	private ItemDAO id = new ItemPostgres();
 	private OfferService os = new OfferService();
 	private PaymentService ps = new PaymentService();
+	private Logger log = LogManager.getLogger(ItemService.class);
 
 	public void updateNewItemStatus() {
 		id.updateNewItemStatus();
 	}
 
 	public Item addItem() {
-		Util.clear();
+		Table.title("Add New Game");
 		Item i = new Item();
-		Table.header("Add a new game");
 		Util.print("Title: ");
 		i.setName(Util.in.nextLine());
 		Util.print("Description: ");
@@ -37,12 +39,15 @@ public class ItemService {
 
 		return i;
 	}
+	
+	public void updateItem(Item i) {
+		
+	}
 
 	public void viewOwnedItems(User u) {
 		List<Item> items = id.getItemsByUser(u);
 
-		Util.clear();
-		Table.header(u.getFirstName() + "'s Games");
+		Table.title(u.getFirstName() + "'s Games");
 		int line = 1;
 		for (Item i : items) {
 
@@ -60,6 +65,7 @@ public class ItemService {
 			int c = Integer.parseInt(choice) - 1;
 			if (c > -1 && c < items.size()) {
 				this.viewOwnedItem(items.get(c));
+				this.viewOwnedItems(u);
 			} else {
 				Util.invalid();
 				this.viewOwnedItems(u);
@@ -72,55 +78,23 @@ public class ItemService {
 	}
 
 	public void viewOwnedItem(Item i) {
-		List<Payment> payments = ps.getPaymentsByItem(i);
-		Util.clear();
-
-		Table.title(i.getName());
-		Table.row(String.format("%-20s      $ %6.2f", "Remaining balance:", i.getBalance()));
-		Util.hr();
-		
-		Table.header(String.format("%-10s    %-6s    %10s", "Due Date", "Status", "Amount Due"));
-		for(Payment p : payments) {
-		Table.header(String.format("%-10s    %-6s      $ %6.2f", p.getDateDue().toString(), p.getStatus(), p.getAmountDue()));
-		}
-		Util.println(i.getDescription());
-
-		Util.println("\n\n\n");
-		Util.println("What would you like to do?");
-		Util.println(" 1. Make a payment");
-		String choice = Util.in.nextLine();
-		
-		//make payment
-		for(Payment p : payments) {
-			if(p.getStatus().equals("unpaid")) {
-				p.setStatus("paid");
-				ps.updatePaymentStatus(p);
-				i.setBalance(i.getBalance() - p.getAmountDue());
-				id.updateItemBalance(i);
-				break;
-			}
-		}
-		this.viewOwnedItem(i);
-		
+		ps.viewPaymentsByItem(i);
 	}
 
 	public void viewItems(User u) {
 		boolean isEmployee = u.getLevel() > 1;
 		List<Item> items = isEmployee ? id.getItems() : id.getItemsByStatus("<>", "owned");
 		int line = 1;
-		Util.clear();
-		Table.row(isEmployee ? "All Games" : "In Stock Games");
+		Table.title(isEmployee ? "All Games" : "In Stock Games");
 
+		Table.header(String.format("%3.3s    %-30.30s    %-9s", "No.", "Title", "Status"));
 		for (Item i : items) {
-			String row = isEmployee ? "" : "";
-			Table.row(row);
-			Util.print(i.getStatus().equals("new") ? "*" : " ");
-			Util.println(line + ". " + i.getName());
-			line++;
+			Table.row(String.format("%3d    %-30.30s    %-9s", line++, i.getName(), i.getStatus()));
 		}
 
-		Util.println("\n\n\n");
+		Util.hr();
 		Util.println("Select a game to view or press ENTER to return.");
+		Util.hr();
 		String choice = Util.in.nextLine();
 
 		if (!choice.isEmpty()) {
@@ -137,10 +111,8 @@ public class ItemService {
 	}
 
 	public void viewItem(Item i, User u) {
-		Util.clear();
+		Table.title(i.getName());
 
-		Util.println(i.getName());
-		Util.println();
 		Util.println(i.getDescription());
 
 		Util.println("\n\n\n");

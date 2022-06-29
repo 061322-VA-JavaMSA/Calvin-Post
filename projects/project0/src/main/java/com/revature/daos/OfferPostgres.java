@@ -8,14 +8,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.revature.Driver;
 import com.revature.models.Item;
 import com.revature.models.Offer;
 import com.revature.models.User;
 import com.revature.util.ConnectionUtil;
 
 public class OfferPostgres implements OfferDAO {
+	
+	private static Logger log = LogManager.getLogger(OfferPostgres.class);
 
-	// not working
 	@Override
 	public List<Offer> getOffersByItem(Item i) {
 		String sql = "select * from (select created_on, status, amount, item_id, user_id, username from offers join users on user_id = id) o where item_id = ?;";
@@ -41,7 +46,7 @@ public class OfferPostgres implements OfferDAO {
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		return offers;
 	}
@@ -73,7 +78,7 @@ public class OfferPostgres implements OfferDAO {
 			}
 			
 		} catch (SQLException e) {
-			
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		return offers;
 	}
@@ -97,7 +102,7 @@ public class OfferPostgres implements OfferDAO {
 			
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		
 		Item i = new Item();
@@ -105,7 +110,6 @@ public class OfferPostgres implements OfferDAO {
 		return this.getOffersByItem(i);
 	}
 
-	// not working
 	@Override
 	public List<Offer> getOffersByUser(User u) {
 		String sql = "select date, status, amount, item_id, name, o.user_id, username from offers o join users u on u.id = o.user_id join items i on i.id = item_id having user_id = ?;";
@@ -131,7 +135,7 @@ public class OfferPostgres implements OfferDAO {
 			}
 			
 		} catch (SQLException e) {
-			
+			log.error(e.getSQLState(), e.getMessage());
 		}
 		return offers;
 	}
@@ -151,6 +155,7 @@ public class OfferPostgres implements OfferDAO {
 			return rowsChanged < 1 ? false : true;
 			
 		} catch (SQLException e) {
+			log.error(e.getSQLState(), e.getMessage());
 			return false;
 		}
 	}
@@ -171,6 +176,7 @@ public class OfferPostgres implements OfferDAO {
 				return true;
 			}
 		} catch(SQLException e) {
+			log.error(e.getSQLState(), e.getMessage());
 			return false;
 		}
 		return false;
