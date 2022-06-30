@@ -9,9 +9,9 @@ public interface PaymentDAO {
 
 	List<Payment> getPaymentsByItem(Item i);
 	
-	void createPaymentsByItem(Item i);
+	void createPayment(Payment p);
 	
-	void updatePayment(Payment p);
+	boolean updatePayment(Payment p);
 	
 	List<Payment> getPayments();
 }

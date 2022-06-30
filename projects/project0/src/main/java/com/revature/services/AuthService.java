@@ -15,31 +15,23 @@ public class AuthService {
 	private UserDAO ud = new UserPostgres();
 	private Logger log = LogManager.getLogger(AuthService.class);
 
-	public User login() {
-		Table.title("Calvin's Game Shop");
-
-		System.out.print("Username: ");
-		String username = Util.in.nextLine();
-		System.out.print("Password: ");
-		String password = Util.in.nextLine();
-
-		try {
-			if (username == null || password == null) {
-				throw new LoginException();
-			}
-
-			User u = ud.getUserByUsername(username);
-
-			if (u == null || !u.getPassword().equals(password)) {
-				throw new LoginException();
-			}
-
-			System.out.println("Login successful.");
-			return u;
-		} catch (LoginException e) {
-			System.out.println("Unable to sign in.");
-			return new User();
+	public User login(String user, String pass) throws LoginException {
+		User u = new User();
+		
+		if (user.equals(null) || pass.equals(null)) {
+			throw new LoginException();
 		}
+		
+		u = ud.getUserByUsername(user);
+
+		if (u == null || !u.getPassword().equals(pass)) {
+			throw new LoginException();
+		}
+
+		log.info("User " + u.getUsername() + " signed in successfully.");
+
+		return u;
+
 	}
-	
+
 }

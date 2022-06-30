@@ -19,6 +19,16 @@ public class Table {
 		Util.hr();
 	}
 	
+	public static void header(String[] strings) {
+		String space = "    ";
+		String res = "";
+		for(int i = 0; i < strings.length; i ++) {
+			if(i > 0) res += space;
+			res += strings[i];
+		}
+		header(res);
+	}
+	
 	public static void row(String s) {
 		int space = (80 - s.length()) / 2;
 		System.out.printf("%" + (space + s.length()) + "s%n", s);

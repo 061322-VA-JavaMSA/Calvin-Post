@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.revature.enums.Role;
 import com.revature.exceptions.LoginException;
 import com.revature.models.User;
 
@@ -27,20 +28,30 @@ public class AuthServiceTest {
 	
 	@Test
 	public void loginEmployee() {
+		String user = "employee";
+		String pass = "password";
 		User expected = new User();
 		expected.setFirstName("Employee");
 		expected.setLastName("Smith");
 		expected.setId(11);
-		expected.setLevel(2);
+		expected.setRole(Role.EMPLOYEE);
 		expected.setUsername("employee");
 		expected.setPassword("password");
-		User actual = sut.login();
+		User actual = new User();
+		try {
+			actual = sut.login(user, pass);
+		} catch (LoginException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void loginUnknownUser() {
-		assertThrows(LoginException.class, () -> sut.login());
+		String user = "nosuchuser";
+		String pass = "nosuchpass";
+		assertThrows(LoginException.class, () -> sut.login(user, pass));
 	}
 
 }

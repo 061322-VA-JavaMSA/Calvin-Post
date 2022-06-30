@@ -1,12 +1,12 @@
 /*
  * Init tables
  */
-drop table if exists transactions, payments, offers, items, users cascade;
+drop table if exists payments, offers, items, users cascade;
 
 -- users
 create table users(
 id serial primary key,
-level integer default 1,
+role varchar(8) default 'USER',
 username varchar(12) unique not null check(length(username) > 2),
 password varchar(30) not null,
 first_name varchar(30) not null,
@@ -39,7 +39,8 @@ create table payments(
 id serial primary key,
 date_due date,
 amount_due numeric,
-status varchar(6) default 'unpaid',
+amount_received numeric default 0.0,
+status varchar(7) default 'unpaid',
 item_id integer references items(id)
 );
 
@@ -60,20 +61,22 @@ insert into users (username, password, first_name, last_name) values ('ctolan8',
 insert into users (username, password, first_name, last_name) values ('obrockman9', 'gJFuSOT', 'Olenka', 'Brockman');
 
 -- create employee manager accounts
-insert into users (level, username, password, first_name, last_name) values (2, 'employee', 'password', 'Employee', 'Smith');
-insert into users (level, username, password, first_name, last_name) values (3, 'manager', 'password', 'Manager', 'Jones');
+insert into users (role, username, password, first_name, last_name) values ('EMPLOYEE', 'employee', 'password', 'Employee', 'Smith');
+insert into users (role, username, password, first_name, last_name) values ('MANAGER', 'manager', 'password', 'Manager', 'Jones');
 
 -- items
-insert into items (created_on, status, name, description) values ('2022-01-12', 'new', 'Watch the Birdie', 'Beam Radiation of Other Bone using Photons 1 - 10 MeV');
-insert into items (created_on, status, name, description) values ('2021-09-26', 'new', 'Evilspeak', 'Replacement of Right Tibia with Nonaut Sub, Perc Approach');
-insert into items (created_on, status, name, description) values ('2021-07-13', 'available', 'Execution Squad', 'Removal of Drainage Device from Upper Bone, Open Approach');
-insert into items (created_on, status, name, description) values ('2022-05-05', 'available', 'Bill Bailey: Qualmpeddler', 'Restriction of Urethra with Intraluminal Device, Endo');
-insert into items (created_on, status, name, description) values ('2022-04-27', 'new', 'Wall, The (Die Wand)', 'Revision of Synth Sub in R Wrist Jt, Open Approach');
-insert into items (created_on, status, name, description) values ('2022-02-27', 'available', 'Ali Baba Goes to Town', 'Replacement of Nasal Septum with Nonaut Sub, Perc Approach');
-insert into items (created_on, status, name, description) values ('2021-09-16', 'new', 'Let''s Get Lost', 'Drainage of Aortic Body with Drainage Device, Open Approach');
-insert into items (created_on, status, name, description) values ('2022-05-11', 'available', 'Clean and Sober', 'Excision of Left Orbit, Perc Endo Approach, Diagn');
-insert into items (created_on, status, name, description) values ('2021-10-13', 'available', 'JFK: The Smoking Gun', 'Release Penis, Percutaneous Approach');
-insert into items (created_on, status, name, description) values ('2021-09-23', 'new', 'Chaos', 'Restrict of L Up Lobe Bronc with Extralum Dev, Perc Approach');
+insert into items (created_on, status, name, description) values ('2022-05-04', 'available', 'Super Mario Bros.', 'Capra ibex');
+insert into items (created_on, status, name, description) values ('2021-12-30', 'new', 'Super Mario Bros. 2', 'Spermophilus tridecemlineatus');
+insert into items (created_on, status, name, description) values ('2021-12-05', 'available', 'Super Mario Bros. 3', 'Pelecanus conspicillatus');
+insert into items (created_on, status, name, description) values ('2022-05-22', 'new', 'Super Mario World', 'Vulpes vulpes');
+insert into items (created_on, status, name, description) values ('2022-01-27', 'available', 'Super Mario 64', 'Capreolus capreolus');
+insert into items (created_on, status, name, description) values ('2022-03-02', 'available', 'Super Mario Sunshine', 'Geochelone elegans');
+insert into items (created_on, status, name, description) values ('2022-05-14', 'new', 'New Super Mario Bros.', 'Zalophus californicus');
+insert into items (created_on, status, name, description) values ('2021-08-08', 'available', 'Super Mario Galaxy', 'Paradoxurus hermaphroditus');
+insert into items (created_on, status, name, description) values ('2021-11-29', 'available', 'Super Mario Galaxy 2', 'Cyrtodactylus louisiadensis');
+insert into items (created_on, status, name, description) values ('2021-09-08', 'new', 'Super Mario 3D Land', 'Psittacula krameri');
+insert into items (created_on, status, name, description) values ('2021-08-19', 'new', 'Super Mario 3D World', 'Bubulcus ibis');
+insert into items (created_on, status, name, description) values ('2022-01-07', 'available', 'Super Mario Odyssey', 'Camelus dromedarius');
 
 -- offers
 insert into offers (created_on, status, amount, item_id, user_id) values ('2022-06-05', 'pending', 25.64, 3, 2);
@@ -86,28 +89,3 @@ insert into offers (created_on, status, amount, item_id, user_id) values ('2022-
 insert into offers (created_on, status, amount, item_id, user_id) values ('2022-06-11', 'pending', 75.64, 2, 7);
 insert into offers (created_on, status, amount, item_id, user_id) values ('2022-06-06', 'pending', 97.78, 8, 5);
 insert into offers (created_on, status, amount, item_id, user_id) values ('2022-06-08', 'pending', 30.82, 5, 3);
-
--- owned items
-insert into items (name, description, balance, user_id) values ('Summer Stock', 'Liver lacerat, mod-open', 29.69, 3);
-insert into items (name, description, balance, user_id) values ('Road to Guantanamo, The', 'Bipol I currnt mixed-mod', 87.09, 9);
-insert into items (name, description, balance, user_id) values ('Troll', 'Injury iliac artery', 57.82, 6);
-insert into items (name, description, balance, user_id) values ('Parade, The (Parada)', 'Syphilitic keratitis', 37.63, 9);
-insert into items (name, description, balance, user_id) values ('Adventures of Hajji Baba, The', 'Benign neo urinary NEC', 70.71, 2);
-insert into items (name, description, balance, user_id) values ('You''re Gonna Miss Me', '1st deg burn arm-mult', 28.83, 7);
-insert into items (name, description, balance, user_id) values ('Gift, The', 'Del w 2 deg lacerat-del', 54.54, 4);
-insert into items (name, description, balance, user_id) values ('Cave of Forgotten Dreams', 'Unsp lym unsp xtrndl org', 27.12, 4);
-insert into items (name, description, balance, user_id) values ('How I Unleashed World War II', 'Alchl gstritis w hmrhg', 55.11, 6);
-insert into items (name, description, balance, user_id) values ('Get on the Bus', 'Poisoning-antitussives', 95.89, 6);
-/*
--- payments
-insert into payments (created_on, amount, item_id) values ('2022-06-05', 48.58, 5);
-insert into payments (created_on, amount, item_id) values ('2022-04-28', 27.2, 9);
-insert into payments (created_on, amount, item_id) values ('2021-08-10', 82.49, 5);
-insert into payments (created_on, amount, item_id) values ('2021-09-25', 70.79, 3);
-insert into payments (created_on, amount, item_id) values ('2021-08-20', 63.54, 3);
-insert into payments (created_on, amount, item_id) values ('2021-12-14', 81.32, 10);
-insert into payments (created_on, amount, item_id) values ('2022-01-15', 63.16, 3);
-insert into payments (created_on, amount, item_id) values ('2021-10-22', 24.96, 4);
-insert into payments (created_on, amount, item_id) values ('2022-01-28', 77.27, 8);
-insert into payments (created_on, amount, item_id) values ('2021-12-01', 45.31, 7);
-*/

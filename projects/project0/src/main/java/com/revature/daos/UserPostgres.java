@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.revature.Driver;
+import com.revature.enums.Role;
 import com.revature.models.User;
 import com.revature.util.ConnectionUtil;
 
@@ -21,22 +22,21 @@ public class UserPostgres implements UserDAO {
 
 	@Override
 	public User createUser(User u) {
-		String sql = "insert into users (username, password, first_name, last_name, level) values (?, ?, initcap(?), initcap(?), ?) returning id;";
+		String sql = "insert into users (username, password, first_name, last_name, role) values (?, ?, initcap(?), initcap(?), ?) returning id;";
 		try (Connection c = ConnectionUtil.getConnectionFromFile()) {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, u.getUsername());
 			ps.setString(2, u.getPassword());
 			ps.setString(3, u.getFirstName());
 			ps.setString(4, u.getLastName());
-			ps.setInt(5, u.getLevel());
+			ps.setString(5, u.getRole().toString());
 			
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) {
 				u.setId(rs.getInt("id"));
-				log.info("User " + u.getUsername() + " was created.");
 			}
 		} catch (SQLException e) {
-			log.error("Failed to create user " + u.getUsername() + "." + e.getMessage());
+			log.error("Failed to insert into users");
 		}
 		return u;
 	}
@@ -57,17 +57,17 @@ public class UserPostgres implements UserDAO {
 			ps.setString(1, username);
 			
 			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
+			if (rs.next()) {
 				u = new User();
 				u.setId(rs.getInt("id"));
-				u.setLevel(rs.getInt("level"));
+				u.setRole(Role.valueOf(rs.getString("role")));
 				u.setUsername(rs.getString("username"));
 				u.setPassword(rs.getString("password"));
 				u.setFirstName(rs.getString("first_name"));
 				u.setLastName(rs.getString("last_name"));
 			}
 		} catch (SQLException e) {
-			log.error(e.getSQLState(), e.getMessage());
+			log.error("Failed to retrieve data from users.");
 		}
 		return u;
 	}
@@ -84,7 +84,7 @@ public class UserPostgres implements UserDAO {
 			while(rs.next()) {
 				User u = new User();
 				u.setId(rs.getInt("id"));
-				u.setLevel(rs.getInt("level"));
+				u.setRole(Role.valueOf(rs.getString("role")));
 				u.setUsername(rs.getString("username"));
 				u.setPassword(rs.getString("password"));
 				u.setFirstName(rs.getString("first_name"));
@@ -93,15 +93,15 @@ public class UserPostgres implements UserDAO {
 				users.add(u);
 			}
 		} catch (SQLException e) {
-			System.out.println("Unable to retrieve data.");
+			log.error("Failed to retrieve data from users.");
 		}
 		
 		return users;
 	}
 
 	@Override
-	public List<User> getUsers(String level) {
-		String sql = "select * from users where level " + level + ";";
+	public List<User> getUsersByRole(Role role) {
+		String sql = "select * from users where role = '" + role.toString() + "';";
 		List<User> users = new ArrayList<>();
 		
 		try (Connection c = ConnectionUtil.getConnectionFromFile()) {
@@ -111,7 +111,7 @@ public class UserPostgres implements UserDAO {
 			while(rs.next()) {
 				User u = new User();
 				u.setId(rs.getInt("id"));
-				u.setLevel(rs.getInt("level"));
+				u.setRole(Role.valueOf(rs.getString("role")));
 				u.setUsername(rs.getString("username"));
 				u.setPassword(rs.getString("password"));
 				u.setFirstName(rs.getString("first_name"));
@@ -120,7 +120,7 @@ public class UserPostgres implements UserDAO {
 				users.add(u);
 			}
 		} catch (SQLException e) {
-			log.error(e.getSQLState(), e.getMessage());
+			log.error("Failed to retrieve data from users.");
 		}
 		
 		return users;
@@ -144,7 +144,7 @@ public class UserPostgres implements UserDAO {
 			rowsChanged = ps.executeUpdate();
 			
 		} catch (SQLException e) {
-			log.error(e.getSQLState(), e.getMessage());
+			log.error("Failed to delete from users.");
 			return false;
 		}
 		

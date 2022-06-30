@@ -18,5 +18,5 @@ public interface OfferDAO {
 
 	boolean rejectOffer(Offer o);
 
-	List<Offer> acceptOffer(Offer o);
+	List<Offer> updateOffers(Offer o);
 }

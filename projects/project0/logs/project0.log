@@ -14,3 +14,173 @@
 23:20:15 [main] ERROR com.revature.daos.ItemPostgres - 22023
 00:01:38 [main] INFO  com.revature.daos.UserPostgres - User cpost was created.
 00:28:01 [main] INFO  com.revature.daos.UserPostgres - User cpost was created.
+14:30:15 [main] ERROR com.revature.daos.ItemPostgres - 42601
+14:31:43 [main] ERROR com.revature.daos.ItemPostgres - 42601
+14:34:01 [main] ERROR com.revature.daos.ItemPostgres - 42703
+15:10:06 [main] ERROR com.revature.daos.PaymentPostgres - 42601
+15:21:39 [main] ERROR com.revature.daos.PaymentPostgres - 42703
+15:37:31 [main] INFO  com.revature.daos.UserPostgres - User cpost was created.
+15:46:01 [main] ERROR com.revature.daos.PaymentPostgres - 42703
+15:46:01 [main] ERROR com.revature.daos.PaymentPostgres - 42703
+16:00:33 [main] ERROR com.revature.daos.PaymentPostgres - 42601
+16:01:33 [main] ERROR com.revature.daos.PaymentPostgres - 22001
+16:02:38 [main] ERROR com.revature.daos.PaymentPostgres - 22001
+17:02:45 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+17:03:31 [main] INFO  com.revature.Driver - User cpost signed out.
+17:12:36 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+17:12:48 [main] INFO  com.revature.Driver - User cpost signed out.
+17:57:02 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+18:37:09 [main] INFO  com.revature.services.AuthService - User manager signed in successfully.
+19:00:52 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+19:01:36 [main] INFO  com.revature.Driver - User cpost signed out.
+19:01:45 [main] INFO  com.revature.services.AuthService - User manager signed in successfully.
+19:02:30 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 12 payments.
+19:04:20 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 12 payments.
+19:06:55 [main] INFO  com.revature.Driver - User manager signed out.
+19:07:00 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+19:07:14 [main] INFO  com.revature.services.PaymentService - User cpost made a payment of $80.0 on 'Summer Stock'.
+19:07:15 [main] INFO  com.revature.services.PaymentService - User cpost was refunded $80.0
+19:08:50 [main] INFO  com.revature.services.AuthService - User manager signed in successfully.
+19:13:13 [main] INFO  com.revature.services.AuthService - User manager signed in successfully.
+19:13:36 [main] INFO  com.revature.services.PaymentService - Successfully created payments for 'Clean and Sober'.
+19:13:41 [main] INFO  com.revature.Driver - User manager signed out.
+19:14:23 [main] INFO  com.revature.services.AuthService - User nkilbee4 signed in successfully.
+19:14:28 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 16 payments.
+19:15:21 [main] INFO  com.revature.services.PaymentService - User nkilbee4 made a payment of $40.0 on 'Clean and Sober'.
+19:15:22 [main] INFO  com.revature.services.PaymentService - Payment id=13 was updated.
+19:15:22 [main] INFO  com.revature.services.PaymentService - Payment id=14 was updated.
+19:19:31 [main] INFO  com.revature.services.AuthService - User manager signed in successfully.
+19:19:45 [main] INFO  com.revature.services.PaymentService - Successfully created payments for 'Bill Bailey: Qualmpeddler'.
+19:19:49 [main] INFO  com.revature.Driver - User manager signed out.
+19:20:15 [main] INFO  com.revature.services.AuthService - User ifrayne1 signed in successfully.
+19:20:24 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 4 payments.
+19:20:31 [main] INFO  com.revature.services.PaymentService - User ifrayne1 made a payment of $90.0 on 'Bill Bailey: Qualmpeddler'.
+19:20:31 [main] INFO  com.revature.services.PaymentService - Payment id=29 was updated.
+19:20:31 [main] INFO  com.revature.services.PaymentService - Payment id=30 was updated.
+19:20:31 [main] INFO  com.revature.services.PaymentService - Payment id=31 was updated.
+19:20:31 [main] INFO  com.revature.services.PaymentService - Payment id=32 was updated.
+19:48:16 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+19:48:37 [main] INFO  com.revature.Driver - User cpost signed out.
+19:48:42 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+19:48:57 [main] INFO  com.revature.services.PaymentService - Successfully created payments for 'You're Gonna Miss Me'.
+19:52:27 [main] INFO  com.revature.Driver - User employee signed out.
+19:52:33 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+19:52:38 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 4 payments.
+19:52:48 [main] INFO  com.revature.services.PaymentService - User cpost made a payment of $50.0 on 'You're Gonna Miss Me'.
+19:52:48 [main] INFO  com.revature.services.PaymentService - Payment id=33 was updated.
+19:52:48 [main] INFO  com.revature.services.PaymentService - Payment id=34 was updated.
+19:52:48 [main] INFO  com.revature.services.PaymentService - Payment id=35 was updated.
+19:53:03 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 2 payments.
+19:53:28 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 2 payments.
+19:53:51 [main] INFO  com.revature.services.PaymentService - User cpost made a payment of $30.0 on 'You're Gonna Miss Me'.
+19:53:51 [main] INFO  com.revature.services.PaymentService - Payment id=35 was updated.
+19:53:51 [main] INFO  com.revature.services.PaymentService - Payment id=36 was updated.
+19:53:57 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 1 payments.
+19:54:12 [main] INFO  com.revature.services.PaymentService - User cpost made a payment of $8.0 on 'You're Gonna Miss Me'.
+19:54:12 [main] INFO  com.revature.services.PaymentService - Payment id=36 was updated.
+19:54:33 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 1 payments.
+20:08:45 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+20:09:05 [main] INFO  com.revature.Driver - User cpost signed out.
+20:09:14 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+20:09:54 [main] INFO  com.revature.services.PaymentService - Successfully created payments for 'Execution Squad'.
+20:09:57 [main] INFO  com.revature.Driver - User employee signed out.
+20:10:01 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+20:10:06 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 4 payments.
+20:12:43 [main] INFO  com.revature.services.PaymentService - User cpost made a payment of $30.0 on 'Execution Squad'.
+20:12:43 [main] INFO  com.revature.services.PaymentService - Payment id=37 was updated.
+20:12:43 [main] INFO  com.revature.services.PaymentService - Payment id=38 was updated.
+20:12:43 [main] INFO  com.revature.services.PaymentService - Payment id=39 was updated.
+20:12:43 [main] INFO  com.revature.services.PaymentService - Payment id=40 was updated.
+20:12:43 [main] INFO  com.revature.services.PaymentService - User cpost was refunded $3.4200000000000017
+20:45:40 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+20:45:59 [main] INFO  com.revature.Driver - User cpost signed out.
+20:46:05 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+20:46:19 [main] INFO  com.revature.services.PaymentService - Successfully created payments for 'JFK: The Smoking Gun'.
+20:46:22 [main] INFO  com.revature.Driver - User employee signed out.
+20:46:27 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+20:46:31 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 4 payments.
+20:46:43 [main] INFO  com.revature.services.PaymentService - User cpost made a payment of $30.0 on 'JFK: The Smoking Gun'.
+20:46:43 [main] INFO  com.revature.services.PaymentService - Payment id=41 was updated.
+20:46:43 [main] INFO  com.revature.services.PaymentService - Payment id=42 was updated.
+20:46:43 [main] INFO  com.revature.services.PaymentService - Payment id=43 was updated.
+20:46:43 [main] INFO  com.revature.services.PaymentService - Payment id=44 was updated.
+20:46:43 [main] INFO  com.revature.services.PaymentService - Successfully retrieved 1 payments.
+21:04:09 [main] ERROR com.revature.daos.UserPostgres - Failed to insert into users
+21:08:25 [main] ERROR com.revature.daos.UserPostgres - Failed to insert into users
+21:08:25 [main] ERROR com.revature.services.UserService - Unable to create employee 
+21:11:00 [main] INFO  com.revature.Driver - User  signed out.
+21:11:06 [main] ERROR com.revature.daos.UserPostgres - Failed to insert into users
+21:11:06 [main] ERROR com.revature.services.UserService - Unable to create employee 
+21:58:31 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+21:58:43 [main] INFO  com.revature.Driver - User employee signed out.
+21:58:51 [main] ERROR com.revature.daos.UserPostgres - Failed to insert into users
+21:58:51 [main] ERROR com.revature.services.UserService - Unable to create employee cpost
+22:01:45 [main] INFO  com.revature.services.UserService - User cpost was created.
+22:16:48 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+22:17:17 [main] ERROR com.revature.daos.OfferPostgres - Failed to insert into offers.
+00:18:18 [main] INFO  com.revature.services.UserService - User cpost was created.
+00:20:02 [main] INFO  com.revature.services.UserService - User cpost2 was created.
+02:24:26 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+02:33:40 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+02:36:59 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+02:39:43 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+02:40:59 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+02:44:48 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+03:09:22 [main] ERROR com.revature.daos.UserPostgres - Failed to insert into users
+03:09:22 [main] ERROR com.revature.services.UserService - Unable to create user employee
+03:09:23 [main] ERROR com.revature.daos.UserPostgres - Failed to insert into users
+03:09:23 [main] ERROR com.revature.services.UserService - Unable to create employee bobthebuilder
+03:10:51 [main] ERROR com.revature.daos.UserPostgres - Failed to insert into users
+03:10:51 [main] ERROR com.revature.services.UserService - Unable to create user employee
+03:10:51 [main] INFO  com.revature.services.UserService - Employee canhefixit was created.
+08:07:01 [main] ERROR com.revature.daos.ItemPostgres - Failed to insert into items. - createItem
+08:07:01 [main] ERROR com.revature.daos.ItemPostgres - Failed to delete from items. - removeItem
+08:12:44 [main] ERROR com.revature.daos.ItemPostgres - Failed to insert into items. - createItem
+08:12:44 [main] ERROR com.revature.daos.ItemPostgres - Failed to delete from items. - removeItem
+08:26:58 [main] ERROR com.revature.daos.ItemPostgres - Failed to delete from items. - removeItem
+08:27:53 [main] ERROR com.revature.daos.ItemPostgres - Failed to delete from items. - removeItem
+08:29:13 [main] ERROR com.revature.daos.ItemPostgres - Failed to delete from items. - removeItem
+09:10:31 [main] ERROR com.revature.daos.UserPostgres - Failed to insert into users
+09:10:31 [main] ERROR com.revature.services.UserService - Unable to create user cpost
+09:10:31 [main] ERROR com.revature.Driver - Unable to create user account.
+09:10:45 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+09:13:48 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+09:14:44 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+09:18:19 [main] INFO  com.revature.services.UserService - User cpost was created.
+09:18:41 [main] INFO  com.revature.Driver - User cpost signed out.
+09:18:46 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+09:18:55 [main] INFO  com.revature.Driver - User cpost signed out.
+09:19:02 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+09:21:49 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+09:23:46 [main] INFO  com.revature.services.PaymentService - Successfully created payments for 'Super Mario 64'.
+09:25:44 [main] INFO  com.revature.Driver - User employee signed out.
+09:25:48 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+09:27:09 [main] INFO  com.revature.Driver - User cpost signed out.
+09:27:15 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+09:27:45 [main] INFO  com.revature.services.PaymentService - Successfully created payments for 'Super Mario Galaxy'.
+09:28:07 [main] ERROR com.revature.daos.ItemPostgres - Failed to delete from items. - removeItem
+09:32:49 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+09:33:03 [main] ERROR com.revature.daos.ItemPostgres - Failed to delete from items. - removeItem
+09:36:09 [main] ERROR com.revature.daos.ItemPostgres - Failed to delete from items. - removeItem
+09:37:48 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
+09:38:17 [main] INFO  com.revature.Driver - User employee signed out.
+09:38:22 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+09:42:14 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+09:42:17 [main] INFO  com.revature.Driver - Successfully retrieved 4 payments.
+09:43:07 [main] INFO  com.revature.services.AuthService - User cpost signed in successfully.
+09:43:14 [main] INFO  com.revature.Driver - Successfully retrieved 4 payments.
+09:43:17 [main] INFO  com.revature.Driver - User cpost made a payment of $30.0 on 'Super Mario Galaxy'.
+09:43:17 [main] INFO  com.revature.Driver - Payment id=5 was updated.
+09:43:17 [main] INFO  com.revature.Driver - Payment id=6 was updated.
+09:43:17 [main] INFO  com.revature.Driver - Payment id=7 was updated.
+09:43:17 [main] INFO  com.revature.Driver - Payment id=8 was updated.
+09:43:21 [main] INFO  com.revature.Driver - Successfully retrieved 1 payments.
+09:43:38 [main] INFO  com.revature.Driver - User cpost signed out.
+09:43:44 [main] INFO  com.revature.services.AuthService - User manager signed in successfully.
+09:43:47 [main] INFO  com.revature.Driver - Successfully retrieved 1 users.
+09:45:24 [main] INFO  com.revature.services.AuthService - User manager signed in successfully.
+09:45:26 [main] INFO  com.revature.Driver - Successfully retrieved 1 users.
+09:45:43 [main] INFO  com.revature.services.UserService - Employee employee2 was created.
+09:45:48 [main] INFO  com.revature.Driver - Successfully retrieved 2 users.
+09:45:57 [main] INFO  com.revature.services.UserService - User employee2 was removed.
+09:45:57 [main] INFO  com.revature.Driver - Successfully retrieved 1 users.

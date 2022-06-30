@@ -46,14 +46,14 @@ public class OfferPostgres implements OfferDAO {
 			}
 			
 		} catch (SQLException e) {
-			log.error(e.getSQLState(), e.getMessage());
+			log.error("Failed to retrieve data from offers.");
 		}
 		return offers;
 	}
 
 	@Override
 	public List<Offer> getOffers() {
-		String sql = "select date, status, amount, item_id, name, o.user_id, username from offers o join users u on u.id = o.user_id join items i on i.id = item_id;";
+		String sql = "select date, status, amount, item_id, name, o.user_id, username from offers o join users u on u.id = o.user_id join items i on i.id = item_id order by date desc;";
 		List<Offer> offers= new ArrayList<>();
 		
 		try (Connection c = ConnectionUtil.getConnectionFromFile()) {
@@ -78,13 +78,13 @@ public class OfferPostgres implements OfferDAO {
 			}
 			
 		} catch (SQLException e) {
-			log.error(e.getSQLState(), e.getMessage());
+			log.error("Failed to retrieve data from offers.");
 		}
 		return offers;
 	}
 
 	@Override
-	public List<Offer> acceptOffer(Offer o) {
+	public List<Offer> updateOffers(Offer o) {
 		String sql = "begin;update offers set status = 'rejected' where item_id = ? and user_id <> ?; update offers set status = 'accepted' where item_id = ? and user_id = ?; commit;";
 		int itemId = o.getItem().getId();
 		int userId = o.getUser().getId();
@@ -102,7 +102,7 @@ public class OfferPostgres implements OfferDAO {
 			
 			
 		} catch (SQLException e) {
-			log.error(e.getSQLState(), e.getMessage());
+			log.error("Failed to update offers.");
 		}
 		
 		Item i = new Item();
@@ -135,7 +135,7 @@ public class OfferPostgres implements OfferDAO {
 			}
 			
 		} catch (SQLException e) {
-			log.error(e.getSQLState(), e.getMessage());
+			log.error("Failed to retrieve data from offers.");
 		}
 		return offers;
 	}
@@ -155,7 +155,7 @@ public class OfferPostgres implements OfferDAO {
 			return rowsChanged < 1 ? false : true;
 			
 		} catch (SQLException e) {
-			log.error(e.getSQLState(), e.getMessage());
+			log.error("Failed to insert into offers.");
 			return false;
 		}
 	}
@@ -176,7 +176,7 @@ public class OfferPostgres implements OfferDAO {
 				return true;
 			}
 		} catch(SQLException e) {
-			log.error(e.getSQLState(), e.getMessage());
+			log.error("Failed to update offers.");
 			return false;
 		}
 		return false;

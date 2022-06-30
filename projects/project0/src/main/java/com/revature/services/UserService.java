@@ -7,136 +7,85 @@ import org.apache.logging.log4j.Logger;
 
 import com.revature.daos.UserDAO;
 import com.revature.daos.UserPostgres;
+import com.revature.enums.Role;
+import com.revature.exceptions.BadRequestException;
 import com.revature.models.User;
 import com.revature.util.Table;
-import com.revature.util.Util;
 
 public class UserService {
 
 	private UserDAO ud = new UserPostgres();
 	private Logger log = LogManager.getLogger(UserService.class);
-
-	public User createUser() {
+	
+	public User createUser(String user, String pass, String first, String last) throws BadRequestException {
 		Table.title("Create New User");
 
 		User u = new User();
-
-		Util.println("Please fill in all fields");
-		Util.print("Username: ");
-		u.setUsername(Util.in.nextLine());
-		Util.print("Password: ");
-		u.setPassword(Util.in.nextLine());
-		Util.print("First name: ");
-		u.setFirstName(Util.in.nextLine());
-		Util.print("Last name: ");
-		u.setLastName(Util.in.nextLine());
-		u.setLevel(1);
+		u.setUsername(user);
+		u.setPassword(pass);
+		u.setFirstName(first);
+		u.setLastName(last);
+		u.setRole(Role.USER);
 
 		u = ud.createUser(u);
 
-		if (u.getId() == 0) {
-			Util.println("User exists. Unable to create user.");
-			return null;
+		if (u.getId() == -1) {
+			log.error("Unable to create user " + u.getUsername());
+			u = new User();
+			throw new BadRequestException();
+		} else {
+			log.info("User " + u.getUsername() + " was created.");
 		}
-
-		Util.println("User created successfully.");
 		return u;
 	}
 
-	public void modifyUser(User u) {
 
-	}
-
-	public User createEmployee() {
+	public boolean createEmployee(String user, String pass, String first, String last) {
 		Table.title("Create New Employee");
 
 		User u = new User();
 
-		Util.println("Please fill in all fields");
-		Util.print("Username: ");
-		u.setUsername(Util.in.nextLine());
-		Util.print("Password: ");
-		u.setPassword(Util.in.nextLine());
-		Util.print("First name: ");
-		u.setFirstName(Util.in.nextLine());
-		Util.print("Last name: ");
-		u.setLastName(Util.in.nextLine());
-		u.setLevel(2);
+		u.setUsername(user);
+		u.setPassword(pass);
+		u.setFirstName(first);
+		u.setLastName(last);
+		u.setRole(Role.EMPLOYEE);
 
 		u = ud.createUser(u);
 
-		if (u.getId() == 0) {
-			Util.println("User exists. Unable to create user.");
+		if (u.getId() == -1 || u == null) {
+			log.error("Unable to create employee " + u.getUsername());
+			return false;
+		} else {
+			log.info("Employee " + u.getUsername() + " was created.");
+			return true;
+		}
+	}
+	
+	public List<User> getEmployees(Role role){
+		if(role.greaterThan(Role.EMPLOYEE)) {
+			return ud.getUsersByRole(Role.EMPLOYEE);
+		} else {
 			return null;
 		}
-
-		Util.println("User created successfully.");
-		return u;
 	}
 
-	public void viewEmployees(User activeUser) {
-		List<User> users = ud.getUsers();
-
-		Table.title("Existing User Accounts");
-		Table.header(String.format("%-12s    %-30.30s    %-8s", "Username", "Name", "Level"));
-		for (User u : users) {
-			int l = u.getLevel();
-			if (l > 1) {
-				Table.row(String.format("%-12s    %-30.30s    %-8s", u.getUsername(),
-						u.getFirstName() + " " + u.getLastName(), l == 2 ? "Employee" : "Manager"));
-			}
-		}
-
-		Util.println("Type 'new' to create new employee or 'delete [username]' to remove an employee.\nPress ENTER to return.");
-		String choice = Util.in.nextLine();
-		if (choice.equals(" ")) {
-
-		} else if(choice.equalsIgnoreCase("new")) {
-			this.createEmployee();
+	public List<User> getUsers(Role role) {
+		if(role.greaterThan(Role.USER)) {
+			return ud.getUsersByRole(Role.USER);
 		} else {
-			String[] args = choice.split(" ");
-			if (args.length == 2 && args[0].equalsIgnoreCase("delete")) {
-				boolean userFound = false;
-				for (User u : users) {
-					if (u.getUsername().equalsIgnoreCase(args[1])
-							&& !u.getUsername().equals(activeUser.getUsername())) {
-						this.removeUser(u);
-						userFound = true;
-						break;
-					}
-				}
-				Util.println(
-						userFound ? "User " + args[1] + " was deleted." : "Unable to delete user '" + args[1] + ".");
-				this.viewUsers();
-			} else {
-				Util.invalid();
-				this.viewUsers();
-			}
-		}
-
-	}
-
-	public void viewUsers() {
-		List<User> users = ud.getUsers();
-
-		Table.title("Existing User Accounts");
-		Table.header(String.format("%-12s    %-30.30s    %-8s", "Username", "Name", "Level"));
-		for (User u : users) {
-			if (u.getLevel() == 1) {
-				Table.row(String.format("%-12s    %-30.30s    %-8s", u.getUsername(),
-						u.getFirstName() + " " + u.getLastName(), "Customer"));
-			}
+			return null;
 		}
 	}
 
-	public void removeUser(User u) {
-		ud.deleteUserById(u.getId());
+	public boolean removeUser(User u) {
+		if(ud.deleteUserById(u.getId())) {
+			log.info("User " + u.getUsername() + " was removed.");
+			return true;
+		} else {
+			return false;
+		}
+		
 	}
 
-	public List<User> getEmployees() {
-
-		List<User> employees = ud.getUsers("> 1");
-		return employees;
-
-	}
 }

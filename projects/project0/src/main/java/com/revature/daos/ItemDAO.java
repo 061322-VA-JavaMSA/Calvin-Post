@@ -9,10 +9,12 @@ import com.revature.models.User;
 public interface ItemDAO {
 
 	Item getItemById(int id);
-
-	List<Item> getItemsByUser(User u);
 	
-	List<Item> getItemsByStatus(String operator, String status);
+	boolean updateItem(Item i);
+
+	List<Item> getItemsByUserId(int id);
+	
+	List<Item> getAvailableItems();
 
 	List<Item> getItems();
 
@@ -20,9 +22,10 @@ public interface ItemDAO {
 	
 	void updateNewItemStatus();
 	
-	void updateItemOwnedStatus(Offer o);
+	boolean updateItemOwnedStatus(Offer o);
 	
-	void updateItemBalance(Item i);
+	boolean updateItemBalance(Item i);
 
-	boolean removeItemById(int id);
+	boolean deleteItemById(int id);
+
 }

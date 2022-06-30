@@ -8,6 +8,13 @@ public class Payment {
 	private int id;
 	private LocalDate dateDue;
 	private double amountDue;
+	private double amountReceived;
+	public double getAmountReceived() {
+		return amountReceived;
+	}
+	public void setAmountReceived(double amountReceived) {
+		this.amountReceived = amountReceived;
+	}
 	private String status;
 	private Item item;
 	@Override
@@ -15,8 +22,12 @@ public class Payment {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Payment [id=");
 		builder.append(id);
+		builder.append(", dateDue=");
+		builder.append(dateDue);
 		builder.append(", amountDue=");
 		builder.append(amountDue);
+		builder.append(", amountReceived=");
+		builder.append(amountReceived);
 		builder.append(", status=");
 		builder.append(status);
 		builder.append(", item=");
@@ -26,7 +37,7 @@ public class Payment {
 	}
 	@Override
 	public int hashCode() {
-		return Objects.hash(amountDue, id, item, status);
+		return Objects.hash(amountDue, amountReceived, dateDue, id, item, status);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -37,8 +48,10 @@ public class Payment {
 		if (getClass() != obj.getClass())
 			return false;
 		Payment other = (Payment) obj;
-		return Double.doubleToLongBits(amountDue) == Double.doubleToLongBits(other.amountDue) && id == other.id
-				&& Objects.equals(item, other.item) && Objects.equals(status, other.status);
+		return Double.doubleToLongBits(amountDue) == Double.doubleToLongBits(other.amountDue)
+				&& Double.doubleToLongBits(amountReceived) == Double.doubleToLongBits(other.amountReceived)
+				&& Objects.equals(dateDue, other.dateDue) && id == other.id && Objects.equals(item, other.item)
+				&& Objects.equals(status, other.status);
 	}
 	public int getId() {
 		return id;

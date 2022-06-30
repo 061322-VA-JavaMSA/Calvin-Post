@@ -48,7 +48,7 @@ public class Util {
 	}
 
 	public static void hr() {
-		System.out.println(String.format("%0" + 80 + "d", 0).replace("0", "*"));
+		println(String.format("%0" + 80 + "d", 0).replace("0", "*"));
 	}
 
 	public static boolean isDouble(String s) {

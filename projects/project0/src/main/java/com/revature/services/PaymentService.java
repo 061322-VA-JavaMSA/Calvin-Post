@@ -10,95 +10,61 @@ import com.revature.daos.ItemDAO;
 import com.revature.daos.ItemPostgres;
 import com.revature.daos.PaymentDAO;
 import com.revature.daos.PaymentPostgres;
+import com.revature.enums.Role;
 import com.revature.models.Item;
 import com.revature.models.Payment;
-import com.revature.util.Table;
-import com.revature.util.Util;
 
 public class PaymentService {
 
 	private PaymentDAO pd = new PaymentPostgres();
-	private ItemDAO id = new ItemPostgres();
 	private Logger log = LogManager.getLogger(PaymentService.class);
 
-	public void viewPaymentsByItem(Item i) {
-		List<Payment> payments = pd.getPaymentsByItem(i);
+	public List<Payment> getPaymentsByItem(Item i) {
+		if(i == null) {
+			return null;
+		}
+		return pd.getPaymentsByItem(i);
+	}
+
+	public boolean updatePayment(Payment p) {
+		if(p.getItem() == null) {
+			return false;
+		}
+		return pd.updatePayment(p);
+	}
+
+	public boolean createPayments(Item i) {
+		if(i == null) {
+			return false;
+		}
 		double bal = i.getBalance();
-		double pay;
+		double pay = Math.round(bal * 100.0 / 4.0) / 100.0;
+		LocalDate date = LocalDate.now().plusDays(7);
 
-		Table.title("Payments for " + i.getName());
-		if (bal > 0) {
-			Table.row(String.format("%-20s      $ %6.2f", "Remaining balance:", bal));
-			Util.hr();
-
-			Table.header(String.format("%-10s    %-6s    %10s", "Due Date", "Status", "Amount Due"));
-			for (Payment p : payments) {
-				if (p.getStatus().equals("unpaid")) {
-					Table.row(String.format("%-10s    %-6s      $ %6.2f", p.getDateDue().toString(), p.getStatus(),
-							p.getAmountDue()));
-				}
-			}
-			Util.hr();
-			Util.println();
-			Util.println("Enter an amount to make a payment. Press ENTER to return.");
-			Util.hr();
-			String choice = Util.in.nextLine();
-			if (choice.equals("")) {
-				
-			} else if (Util.isDouble(choice)) {
-				pay = Math.floor(Double.parseDouble(choice) * 100.0) / 100.0;
-				if (pay < bal) {
-					bal -= pay;
-					i.setBalance(bal);
-				} else {
-					i.setBalance(0);
-				}
-				id.updateItemBalance(i);
-				for (Payment p : payments) {
-					if (p.getStatus().equals("unpaid")) {
-						if (pay > p.getAmountDue()) {
-							pay -= p.getAmountDue();
-							p.setStatus("paid");
-							pd.updatePayment(p);
-						} else {
-							p.setAmountDue(p.getAmountDue() - pay);
-							pd.updatePayment(p);
-							pay = 0;
-							break;
-						}
-					}
-				}
-				if (pay > 0) {
-					Util.println(String.format("Refunded $%5.2f", pay));
-					Util.pause();
-				}
-				this.viewPaymentsByItem(i);
+		for (int n = 0; n < 4; n++) {
+			Payment p = new Payment();
+			p.setDateDue(date);
+			p.setItem(i);
+			if (n < 3) {
+				p.setAmountDue(pay);
+				bal -= pay;
 			} else {
-				Util.invalid();
-				this.viewPaymentsByItem(i);
+				p.setAmountDue(bal);
 			}
-		} else {
-			Table.row(String.format("%32s", "Paid in full"));
-			Util.hr();
-			Util.pause();
+
+			date = date.plusDays(7);
+
+			pd.createPayment(p);
 		}
+
+		log.info("Successfully created payments for '" + i.getName() + "'.");
+		return true;
 	}
 
-	public void updatePaymentStatus(Payment p) {
-		pd.updatePayment(p);
-	}
-
-	public void viewPayments() {
-		List<Payment> payments = pd.getPayments();
-
-		Table.title("View All Payments");
-
-		Table.header(String.format("%-10s    %-6s    %10s", "Due Date", "Status", "Amount Due"));
-		for (Payment p : payments) {
-			Table.row(String.format("%-10s    %-6s      $ %6.2f", p.getDateDue().toString(), p.getStatus(),
-					p.getAmountDue()));
+	public List<Payment> getPayments(Role role) {
+		if(role.greaterThan(Role.USER)) {
+			return pd.getPayments();
 		}
-		Util.hr();
-		Util.pause();
+		return null;
 	}
 }
