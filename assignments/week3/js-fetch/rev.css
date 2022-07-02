@@ -30,11 +30,21 @@ main>* {
     margin: 8px;
 }
 
+table {
+    background-color: slategray;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 5px;
+}
+tr {
+    background-color: rgb(214, 255, 255);
+}
+
 th {
     color: #555555;
 }
 
 th, td {
-    border-bottom: 2px solid orange;
-    border-right: 2px solid orange;
+    margin: 0;
+    padding: 10px;
 }

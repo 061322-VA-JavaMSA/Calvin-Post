@@ -33,7 +33,7 @@ async function getData() {
     }
 }
 
-function populateData(response) {
+async function populateData(response) {
     console.log(response);
     let dis = document.getElementById('data');
     dis.innerHTML = '';
@@ -46,34 +46,46 @@ function populateData(response) {
     var table = document.createElement('table');
 
     var tr = document.createElement('tr');
-    tr.innerHTML = `<th>Move</th><th>Level</th><th>Method</th>`;
+    tr.innerHTML = `<th>Move</th><th>Type</th><th>Power</th><th>PP</th><th>Level</th><th>Method</th>`;
     table.appendChild(tr);
     var moves = response.moves;
     for (i = 0; i < moves.length; i++) {
+        let move = await (await fetch(moves[i].move.url)).json();
         var tr = document.createElement('tr');
-        var td1 = document.createElement('td');
-        td1.innerHTML = moves[i].move.name;
-        tr.appendChild(td1);
-        var td2 = document.createElement('td');
-        td2.innerHTML = moves[i].version_group_details[0].level_learned_at;
-        tr.appendChild(td2);
-        var td3 = document.createElement('td');
-        td3.innerHTML = moves[i].version_group_details[0].move_learn_method.name;
-        tr.appendChild(td3);
+        var moveName = document.createElement('td');
+        moveName.innerHTML = moves[i].move.name;
+        tr.appendChild(moveName);
+        var moveType = document.createElement('td');
+        moveType.innerHTML = move.type.name;
+        tr.appendChild(moveType);
+        var movePower = document.createElement('td');
+        movePower.innerHTML = move.power == null ? '—' : move.power;
+        movePower.style.textAlign = 'center';
+        tr.appendChild(movePower);
+        var movePP = document.createElement('td');
+        movePP.innerHTML = move.pp;
+        movePP.style.textAlign = 'center';
+        tr.appendChild(movePP);
+        var moveLevel = document.createElement('td');
+        let level = moves[i].version_group_details[0].level_learned_at
+        moveLevel.innerHTML = level == '0' ? '—' : level;
+        moveLevel.style.textAlign = 'right';
+        tr.appendChild(moveLevel);
+        var moveMethod = document.createElement('td');
+        moveMethod.innerHTML = moves[i].version_group_details[0].move_learn_method.name;
+        tr.appendChild(moveMethod);
         table.appendChild(tr);
 
     }
     dis.appendChild(table);
 }
 
-function printValues(obj) {
-    for (var k in obj) {
-        if (obj[k] instanceof Object) {
-            printValues(obj[k]);
-        } else {
-            document.write(obj[k] + "<br>");
-        };
-    }
+async function getMove(url) {
+    let httpRes = await fetch('url');
+    let moveObj = await httpRes.json();
+    console.log("Move Object");
+    console.log(moveObj);
+    return moveObj;
 }
 
 function createTable() {
