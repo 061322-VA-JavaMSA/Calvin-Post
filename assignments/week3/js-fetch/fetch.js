@@ -35,6 +35,7 @@ async function getData() {
 
 async function populateData(response) {
     console.log(response);
+    document.removeTable
     let dis = document.getElementById('data');
     dis.innerHTML = '';
     var h1 = document.createElement('h1');
@@ -86,29 +87,4 @@ async function getMove(url) {
     console.log("Move Object");
     console.log(moveObj);
     return moveObj;
-}
-
-function createTable() {
-    createTableBtn.removeEventListener('click', createTable);
-
-    var table = document.createElement('table');
-    var rows = (Math.floor(Math.random() * 9)) + 1;
-    var cols = (Math.floor(Math.random() * 9)) + 1;
-    for (var i = 0; i < rows; i++) {
-        var tr;
-        tr = document.createElement('tr');
-        for (var j = 0; j < cols; j++) {
-            var td;
-            if (i === 0) td = document.createElement('th');
-            else td = document.createElement('td');
-            td.innerHTML = j;
-            tr.appendChild(td);
-        }
-
-        table.appendChild(tr);
-    }
-    tableDiv.appendChild(table);
-
-    createTableBtn.innerHTML = 'Remove Table';
-    createTableBtn.onclick = removeTable;
 }

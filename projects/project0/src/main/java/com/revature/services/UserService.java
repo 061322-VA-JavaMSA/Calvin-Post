@@ -39,6 +39,9 @@ public class UserService {
 		return u;
 	}
 
+	public List<User> getUsers() {
+		return ud.getUsers();
+	}
 
 	public boolean createEmployee(String user, String pass, String first, String last) {
 		Table.title("Create New Employee");

@@ -100,3 +100,5 @@ from items i
 join users u on user_id = u.id) r 
 on r.item_id = p.item_id 
 order by p.status desc, date_due asc;
+
+select o.created_on, o.status, amount, item_id, name, o.user_id, username from offers o join users u on u.id = o.user_id join items i on i.id = item_id order by o.created_on desc;

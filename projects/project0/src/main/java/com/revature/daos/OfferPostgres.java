@@ -53,7 +53,7 @@ public class OfferPostgres implements OfferDAO {
 
 	@Override
 	public List<Offer> getOffers() {
-		String sql = "select date, status, amount, item_id, name, o.user_id, username from offers o join users u on u.id = o.user_id join items i on i.id = item_id order by date desc;";
+		String sql = "select o.created_on, o.status, amount, item_id, name, o.user_id, username from offers o join users u on u.id = o.user_id join items i on i.id = item_id order by o.created_on desc;";
 		List<Offer> offers= new ArrayList<>();
 		
 		try (Connection c = ConnectionUtil.getConnectionFromFile()) {
@@ -62,7 +62,7 @@ public class OfferPostgres implements OfferDAO {
 			ResultSet rs = s.executeQuery(sql);
 			while(rs.next()) {
 				Offer o = new Offer();
-				o.setDate(rs.getDate("date").toLocalDate());
+				o.setDate(rs.getDate("created_on").toLocalDate());
 				o.setStatus(rs.getString("status"));
 				o.setAmount(rs.getDouble("amount"));
 				Item i = new Item();

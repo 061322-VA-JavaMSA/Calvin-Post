@@ -184,3 +184,9 @@
 09:45:48 [main] INFO  com.revature.Driver - Successfully retrieved 2 users.
 09:45:57 [main] INFO  com.revature.services.UserService - User employee2 was removed.
 09:45:57 [main] INFO  com.revature.Driver - Successfully retrieved 1 users.
+09:55:31 [main] INFO  com.revature.services.AuthService - User manager signed in successfully.
+09:55:33 [main] ERROR com.revature.daos.OfferPostgres - Failed to retrieve data from offers.
+09:59:54 [main] INFO  com.revature.services.AuthService - User manager signed in successfully.
+09:59:57 [main] ERROR com.revature.daos.OfferPostgres - Failed to retrieve data from offers.
+10:02:59 [main] INFO  com.revature.services.AuthService - User manager signed in successfully.
+11:19:18 [main] INFO  com.revature.services.AuthService - User employee signed in successfully.
