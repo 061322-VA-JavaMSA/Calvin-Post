@@ -1,5 +1,6 @@
 package com.revature.models;
 
+import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -7,6 +8,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,23 +22,27 @@ public class User {
 	@Column
 	private int id;
 	
-	@Column(unique=true)
+	@Column(unique=true, nullable=false)
 	private String username;
 	
-	@Column
+	@Column(nullable=false)
 	private String password;
 	
-	@Column(name="first_name")
+	@Column(name="first_name", nullable=false)
 	private String firstName;
 	
-	@Column(name="last_name")
+	@Column(name="last_name", nullable=false)
 	private String lastName;
 	
-	@Column(unique=true)
+	@Column(unique=true, nullable=false)
 	private String email;
 	
-	@Column
-	private int role;
+	@ManyToOne
+	@JoinColumn(name="role_id", nullable=false)
+	private Role role;
+	
+	private List<Reimbursement> reimbursements;
+	
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -75,12 +83,13 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public int getRole() {
+	public Role getRole() {
 		return role;
 	}
-	public void setRole(int role) {
+	public void setRole(Role role) {
 		this.role = role;
 	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(email, firstName, id, lastName, password, role, username);

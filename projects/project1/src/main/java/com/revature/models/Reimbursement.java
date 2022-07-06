@@ -9,7 +9,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "reimbursements")
@@ -23,9 +27,11 @@ public class Reimbursement {
 	@Column
 	private double amount;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column
 	private Timestamp submitted;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column
 	private Timestamp resolved;
 	
@@ -33,10 +39,57 @@ public class Reimbursement {
 	private String description;
 	
 	@Column
-	private Blob blob;
+	private Blob receipt;
+	
+	@ManyToOne
+	@JoinColumn(name="user_id")
+	private User author;
+	
+	@ManyToOne
+	@JoinColumn(name="user_id")
+	private User resolver;
+	
+	@ManyToOne
+	@JoinColumn(name="status_id")
+	private ReimbStatus reimbStatus;
+	
+	@ManyToOne
+	@JoinColumn(name="type_id")
+	private ReimbType reimbType;
+	
 	public Reimbursement() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+	public Blob getReceipt() {
+		return receipt;
+	}
+	public void setReceipt(Blob receipt) {
+		this.receipt = receipt;
+	}
+	public User getAuthor() {
+		return author;
+	}
+	public void setAuthor(User author) {
+		this.author = author;
+	}
+	public User getResolver() {
+		return resolver;
+	}
+	public void setResolver(User resolver) {
+		this.resolver = resolver;
+	}
+	public ReimbStatus getReimbStatus() {
+		return reimbStatus;
+	}
+	public void setReimbStatus(ReimbStatus reimbStatus) {
+		this.reimbStatus = reimbStatus;
+	}
+	public ReimbType getReimbType() {
+		return reimbType;
+	}
+	public void setReimbType(ReimbType reimbType) {
+		this.reimbType = reimbType;
 	}
 	public int getId() {
 		return id;
@@ -68,15 +121,10 @@ public class Reimbursement {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Blob getBlob() {
-		return blob;
-	}
-	public void setBlob(Blob blob) {
-		this.blob = blob;
-	}
 	@Override
 	public int hashCode() {
-		return Objects.hash(amount, blob, description, id, resolved, submitted);
+		return Objects.hash(amount, author, description, id, receipt, reimbStatus, reimbType, resolved, resolver,
+				submitted);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -88,13 +136,17 @@ public class Reimbursement {
 			return false;
 		Reimbursement other = (Reimbursement) obj;
 		return Double.doubleToLongBits(amount) == Double.doubleToLongBits(other.amount)
-				&& Objects.equals(blob, other.blob) && Objects.equals(description, other.description) && id == other.id
-				&& Objects.equals(resolved, other.resolved) && Objects.equals(submitted, other.submitted);
+				&& Objects.equals(author, other.author) && Objects.equals(description, other.description)
+				&& id == other.id && Objects.equals(receipt, other.receipt)
+				&& Objects.equals(reimbStatus, other.reimbStatus) && Objects.equals(reimbType, other.reimbType)
+				&& Objects.equals(resolved, other.resolved) && Objects.equals(resolver, other.resolver)
+				&& Objects.equals(submitted, other.submitted);
 	}
 	@Override
 	public String toString() {
 		return "Reimbursement [id=" + id + ", amount=" + amount + ", submitted=" + submitted + ", resolved=" + resolved
-				+ ", description=" + description + ", blob=" + blob + "]";
+				+ ", description=" + description + ", receipt=" + receipt + ", author=" + author + ", resolver="
+				+ resolver + ", reimbStatus=" + reimbStatus + ", reimbType=" + reimbType + "]";
 	}
 	
 	

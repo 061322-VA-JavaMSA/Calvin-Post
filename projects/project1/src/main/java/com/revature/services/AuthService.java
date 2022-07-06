@@ -3,26 +3,33 @@ package com.revature.services;
 import java.sql.SQLException;
 
 import com.revature.daos.UserDAO;
-import com.revature.daos.UserPostgres;
+import com.revature.daos.UserHibernate;
 import com.revature.exceptions.AuthException;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.User;
+import com.revature.util.Validate;
 
 public class AuthService {
 
-	private UserDAO ud = new UserPostgres();
+	private UserDAO ud = new UserHibernate();
 
-	public User login(String username, String password) throws AuthException, SQLException {
-		User u = null;
+	public User login(String username, String password) throws AuthException, UserNotFoundException {
+		User principal;
 
-		if (username == null || password == null) {
-			throw new AuthException();
-		}
-
-		u = ud.retrieveUserByUsername(username);
-		if (u.getPassword().equals(password)) {
-			return u;
+		if (Validate.isEmail(username)) {
+			principal = ud.retrieveUserByEmail(username);
 		} else {
+			principal = ud.retrieveUserByUsername(username);
+		}
+		
+		if(principal == null) {
+			throw new UserNotFoundException();
+		}
+		if (!principal.getPassword().equals(password)) {
 			throw new AuthException();
 		}
+		
+		return principal;
 	}
+	
 }

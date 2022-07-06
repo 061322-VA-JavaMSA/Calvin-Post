@@ -1,62 +1,43 @@
 package com.revature.models;
 
-import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="roles")
-public class Role {
+@Table(name="reimb_status")
+public class ReimbStatus {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	private String role;
+	private String status;
 	
-	@OneToMany(mappedBy="id")
-	private List<User> users;
-
-	public Role() {
+	public ReimbStatus() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
-	public List<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public String getRole() {
-		return role;
+	public String getStatus() {
+		return status;
 	}
-
-	public void setRole(String role) {
-		this.role = role;
+	public void setStatus(String status) {
+		this.status = status;
 	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, role, users);
+		return Objects.hash(id, status);
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -65,13 +46,12 @@ public class Role {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Role other = (Role) obj;
-		return id == other.id && Objects.equals(role, other.role) && Objects.equals(users, other.users);
+		ReimbStatus other = (ReimbStatus) obj;
+		return id == other.id && Objects.equals(status, other.status);
 	}
-
 	@Override
 	public String toString() {
-		return "Role [id=" + id + ", role=" + role + ", users=" + users + "]";
+		return "ReimbStatus [id=" + id + ", status=" + status + "]";
 	}
 	
 }
