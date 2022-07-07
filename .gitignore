@@ -1,11 +1,13 @@
 # Created by https://www.toptal.com/developers/gitignore/api/eclipse,maven,windows,dbeaver
 # Edit at https://www.toptal.com/developers/gitignore?templates=eclipse,maven,windows,dbeaver
 
+### Other ###
+connection.properties
+*.code-workspace
+
 ### DBeaver ###
 # ide config file
 .dbeaver-data-sources*.xml
-
-connection.properties
 
 ### Eclipse ###
 .metadata
