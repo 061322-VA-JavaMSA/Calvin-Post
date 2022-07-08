@@ -9,11 +9,11 @@ let nav_left = document.getElementById("nav-left");
 if (principalString) {
     principal = JSON.parse(principalString);
 
-    if (principal.role === 'ADMIN') {
-        createNavElement('Users', nav_left, './users.html', null, null);
+    if (principal.role.role === 'MANAGER') {
+        createNavElement('Employees', nav_left, './employees.html', null, null);
     }
 
-    createNavElement('Tasks', nav_left, './tasks.html', null, null);
+    createNavElement('Reimbursements', nav_left, './reimbursements.html', null, null);
 
     createNavElement('Sign Out', nav_right, null, logout, null);
 } else {

@@ -1,6 +1,7 @@
 package com.revature.servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -26,6 +27,18 @@ public class ReimbursementServlet extends HttpServlet {
 		res.addHeader("Content-Type", "application/json");
 		HttpSession session = req.getSession();
 		String pathInfo = req.getPathInfo();
+		
+		List<Reimbursement> testing = rs.getReimbursements();
+		PrintWriter testWriter = res.getWriter();
+		testWriter.write(om.writeValueAsString(testing));
+		/*
+		if (pathInfo == null & session.getAttribute("userRole").equals("MANAGER")) {
+			List<Reimbursement> reimbs = rs.getReimbursements();
+			
+			PrintWriter pw = res.getWriter();
+			pw.write(om.writeValueAsString(reimbs));
+			
+		}
 		if (session.getAttribute("userRole").equals("MANAGER")) {
 			if (pathArgs[0].equals("author")) {
 				List<Reimbursement> reimbs = rs.getReimbursementsByAuthorId(Integer.parseInt(pathArgs[1]));
@@ -33,12 +46,21 @@ public class ReimbursementServlet extends HttpServlet {
 		} else if (session.getAttribute("userRole").equals("EMPLOYEE")) {
 			if (pathInfo.su)
 		}
-
+*/
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
-
+		CorsFix.addCorsHeader(req.getRequestURI(), res);
+		res.addHeader("Content-Type", "application/json");
+		HttpSession session = req.getSession();
+		String pathInfo = req.getPathInfo();
+		
+		if (pathInfo == null && session.getAttribute("userRole").equals("MANAGER")) {
+			
+		} else {
+			res.sendError(401, "Unauthorized.");
+		}
 	}
 
 	@Override

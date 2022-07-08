@@ -42,11 +42,11 @@ public class Reimbursement {
 	private Blob receipt;
 	
 	@ManyToOne
-	@JoinColumn(name="author", insertable=true, updatable=false)
+	@JoinColumn(name="author_id", nullable=false, insertable=false, updatable=false)
 	private User author;
 	
 	@ManyToOne
-	@JoinColumn(name="resolver", insertable=false, updatable=true)
+	@JoinColumn(name="resolver_id", insertable=false, updatable=true)
 	private User resolver;
 	
 	@ManyToOne
