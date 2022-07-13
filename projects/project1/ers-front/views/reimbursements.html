@@ -2,6 +2,8 @@
 
 <head>
     <title>My Tasks</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.3.1/css/all.css'>
@@ -9,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
         integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="../style/main.css" rel="stylesheet">
 </head>
 
 <body>
@@ -26,11 +29,12 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th scope="col"><a class="btn" href="#" id="amount">Amount (USD)</a></th>
                     <th scope="col"><a class="btn" href="#" id="author">Submitted By</a></th>
+                    <th scope="col"><a class="btn" href="#" id="amount">Amount (USD)</a></th>
                     <th scope="col"><a class="btn" href="#" id="type">Type</a></th>
                     <th scope="col"><a class="btn" href="#" id="submitted">Submitted On</a></th>
                     <th scope="col"><a class="btn" href="#" id="status">Status</a></th>
+                    <th scope="col"><a class="btn" href="#" id="receipt">Receipt</a></th>
                 </tr>
             </thead>
             <tbody id="reimb-tbody"></tbody>
@@ -44,7 +48,7 @@
         <div class="text-center p-3">
             061322-JavaMSA
         </div>
-        <div class="fab-container">
+        <div id="newReimbButton" class="fab-container">
             <div class="button iconbutton">
                 <i class="fa-solid fa-plus" data-bs-toggle="modal" data-bs-target="#newRequest"></i>
             </div>
@@ -68,32 +72,35 @@
                 </div>
                 <div class="modal-body">
                     <div class="d-flex flex-column">
-                        <form>
+                        <form id="newRequestForm">
                             <div class="form-group">
+                                <label for="newType">Expense Type:</label>
                                 <select id="newType" class="form-control" name="type" required>
-                                    <option value="value" selected>--Select the expense type--</option>
                                     <option value="FOOD">Food</option>
                                     <option value="LODGING">Lodging</option>
                                     <option value="TRAVEL">Travel</option>
                                     <option value="OTHER">Other</option>
-                                  </select>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <input type="number" class="form-control" id="newAmount" placeholder="$0.00" required>
                             </div>
                             <div class="form-group">
                                 <label for="newReceipt">Include an image of your receipt (Optional)</label>
-                                <input type="file" class="form-control" id="newReceipt" accept="image/*,.pdf" name="newReceipt">
+                                <input type="file" class="form-control" id="newReceipt" accept="image/*,.pdf"
+                                    name="newReceipt" onchange="onImageChange(event);">
                             </div>
                             <div class="form-group">
-                                <textarea class="form-control" id="newDescription" placeholder="Describe the request"></textarea>
+                                <textarea class="form-control" id="newDescription"
+                                    placeholder="Describe the request"></textarea>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="modal-footer d-flex">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button id="submitRequest" type="button" class="btn btn-primary">Submit</button>
+                    <button id="cancelRequest" type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button id="submitRequest" type="button" class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </div>
@@ -103,7 +110,7 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" style="width: max;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
+                    <h5 class="modal-title">Request Viewer</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -148,7 +155,7 @@
                                 <p id="viewDescription" style="text-align:left"></p>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="viewReceiptContainer">
                             <div class="col-md-12">
                                 <p>
                                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
@@ -159,19 +166,18 @@
                                 </p>
                                 <div class="collapse" id="collapseExample">
                                     <div class="card card-body">
-                                        <img id="viewReceipt"
-                                            src="https://i.pinimg.com/736x/87/b1/a4/87b1a4a5078350c42c7f1a422464498d.jpg">
+                                        <img id="viewReceipt" src="">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button id="approved" type="button" class="btn btn-primary" data-bs-dismiss="modal" style="background-color:lightgreen"
+                            value="APPROVED">Approve</button>
+                        <button id="denied" type="button" class="btn btn-primary" data-bs-dismiss="modal" style="background-color:red"
+                            value="DENIED">Deny</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button id="approved" type="button" class="btn btn-primary"
-                            style="background-color:lightgreen">Approve</button>
-                        <button id="denied" type="button" class="btn btn-primary"
-                            style="background-color:red">Deny</button>
                     </div>
                 </div>
             </div>
@@ -182,6 +188,7 @@
     </button>
 
     <script src="../scripts/main.js"></script>
+    <script src="../scripts/image.js"></script>
     <script src="../scripts/reimbs.js"></script>
 </body>
 

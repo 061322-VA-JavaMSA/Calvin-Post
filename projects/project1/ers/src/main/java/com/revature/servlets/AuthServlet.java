@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dtos.UserDTO;
 import com.revature.exceptions.AuthException;
-import com.revature.exceptions.UserNotFoundException;
+import com.revature.exceptions.NotFoundException;
 import com.revature.models.User;
 import com.revature.services.AuthService;
 import com.revature.util.CorsFix;
@@ -36,6 +36,7 @@ public class AuthServlet extends HttpServlet {
 			HttpSession session = req.getSession();
 			session.setAttribute("userId", principal.getId());
 			session.setAttribute("userRole", principal.getRole().getRole());
+			session.setAttribute("principal", om.writeValueAsString(principal));
 			
 			// To make Chrome work with our cookie
 			String cookie = res.getHeader("Set-Cookie") + "; SameSite=None; Secure";
@@ -47,7 +48,7 @@ public class AuthServlet extends HttpServlet {
 				res.setStatus(200);
 			}
 			
-		} catch (AuthException | UserNotFoundException e) {
+		} catch (AuthException | NotFoundException e) {
 			res.sendError(400, "Unable to login.");
 		}
 	}

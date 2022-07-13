@@ -30,19 +30,19 @@ public class ReimbursementHibernate implements ReimbursementDAO {
 		}
 		return r;
 	}
-	
+
 	@Override
 	public List<Reimbursement> retrieveReimbursements() {
 		List<Reimbursement> reimbs = null;
-		
+
 		try (Session s = HibernateUtil.getSessionFactory().openSession()) {
 			reimbs = s.createQuery("from Reimbursement", Reimbursement.class).list();
 		}
 		return reimbs;
 	}
-
+	
 	@Override
-	public List<Reimbursement> retrieveReimbursementsByAuthorId(int id) {
+	public List<Reimbursement> retrieveReimbursementsByAuthor(User u) {
 		List<Reimbursement> reimbs = null;
 
 		try (Session s = HibernateUtil.getSessionFactory().openSession()) {
@@ -50,7 +50,7 @@ public class ReimbursementHibernate implements ReimbursementDAO {
 			CriteriaQuery<Reimbursement> cq = cb.createQuery(Reimbursement.class);
 			Root<Reimbursement> root = cq.from(Reimbursement.class);
 
-			Predicate pFromUser = cb.equal(root.get("author"), id);
+			Predicate pFromUser = cb.equal(root.get("author"), u);
 			cq.select(root).where(pFromUser);
 
 			reimbs = s.createQuery(cq).list();
@@ -59,7 +59,7 @@ public class ReimbursementHibernate implements ReimbursementDAO {
 	}
 
 	@Override
-	public List<Reimbursement> retrieveReimbursementsByResolverId(int id) {
+	public List<Reimbursement> retrieveReimbursementsByResolver(User u) {
 		List<Reimbursement> reimbs = null;
 
 		try (Session s = HibernateUtil.getSessionFactory().openSession()) {
@@ -67,7 +67,7 @@ public class ReimbursementHibernate implements ReimbursementDAO {
 			CriteriaQuery<Reimbursement> cq = cb.createQuery(Reimbursement.class);
 			Root<Reimbursement> root = cq.from(Reimbursement.class);
 
-			Predicate pFromUser = cb.equal(root.get("resolver"), id);
+			Predicate pFromUser = cb.equal(root.get("resolver"), u);
 			cq.select(root).where(pFromUser);
 
 			reimbs = s.createQuery(cq).list();
@@ -77,8 +77,14 @@ public class ReimbursementHibernate implements ReimbursementDAO {
 
 	@Override
 	public Reimbursement updateReimbursement(Reimbursement r) {
-		// TODO Auto-generated method stub
-		return null;
+		try (Session s = HibernateUtil.getSessionFactory().openSession()) {
+			Transaction tx = s.beginTransaction();
+			s.update("Reimbursement", r);
+			tx.commit();
+		} catch (ConstraintViolationException e) {
+			// log it
+		}
+		return r;
 	}
 
 	@Override
@@ -96,6 +102,17 @@ public class ReimbursementHibernate implements ReimbursementDAO {
 			reimbs = s.createQuery(cq).list();
 		}
 		return reimbs;
+	}
+
+	@Override
+	public Reimbursement retrieveReimbursementById(int id) {
+		Reimbursement r = null;
+		
+		try (Session s = HibernateUtil.getSessionFactory().openSession()) {
+			r = s.get(Reimbursement.class, id);
+		}
+		
+		return r;
 	}
 
 }

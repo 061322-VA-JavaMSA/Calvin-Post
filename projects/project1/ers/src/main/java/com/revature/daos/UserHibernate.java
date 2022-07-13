@@ -87,4 +87,10 @@ public class UserHibernate implements UserDAO {
 		return users;
 	}
 
+	@Override
+	public User updateUser(User u) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

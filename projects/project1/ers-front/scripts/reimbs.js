@@ -1,14 +1,14 @@
 if (!principal) {
     window.location.href = "./index.html";
 }
-if (principal.role === 'MANAGER') {
-    let approveB = document.getElementById('approved');
-    approveB.style.visibility = 'visible';
-    approveB.style.display = 'inline';
-    let denyB = document.getElementById('denied');
-    denyB.style.visibility = 'visible';
-    denyB.style.display = 'inline';
+if (principal.role === 'EMPLOYEE') {
+    document.getElementById('newReimbButton').style.visibility = 'visible';
+    document.getElementById('newReimbButton').style.display = 'inline';
+} else {
+    document.getElementById('newReimbButton').style.visibility = 'hidden';
+    document.getElementById('newReimbButton').style.display = 'none';
 }
+
 window.onload = getReimbs;
 let reimbs;
 let ascend = true;
@@ -24,13 +24,53 @@ let submitted = document.getElementById('submitted');
 submitted.addEventListener('click', sortReimbs);
 let statusCol = document.getElementById('status');
 statusCol.addEventListener('click', sortReimbs);
+let receiptCol = document.getElementById('receipt');
+receiptCol.addEventListener('click', sortReimbs);
+let sumbitRequest = document.getElementById('submitRequest');
+sumbitRequest.addEventListener('click', addReimb);
+let cancelRequest = document.getElementById('cancelRequest');
+cancelRequest.addEventListener('click', clearRequestForm);
+
+let reimbToView;
+
+async function addReimb() {
+    let reqAmount = document.getElementById('newAmount').value;
+    let reqType = document.getElementById('newType').value;
+    let reqDesc = document.getElementById('newDescription').value;
+    let reqReceipt = document.getElementById('newType').value;
+
+    let submitResponse = await fetch(`${apiUrl}/reimbursements`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            'type': `${reqType}`,
+            'amount': `${reqAmount}`,
+            'description': `${reqDesc}`,
+            'receipt': `${reqReceipt}`
+        })
+    });
+
+    if (submitResponse.status >= 200 && submitResponse.status < 300) {
+        clearRequestForm();
+        getReimbs();
+    } else {
+        console.log('Unable to complete request.');
+    }
+}
+
+function clearRequestForm() {
+    document.getElementById('newRequestForm').resest();
+}
 
 async function getReimbs() {
     let reimbRes = await fetch(`${apiUrl}/reimbursements`, {
-        method: 'GET'
+        credentials: 'include'
     });
 
-    if (reimbRes.status == 200) {
+    if (reimbRes.status >= 200 && reimbRes.status < 300) {
         reimbs = await reimbRes.json();
         populateReimbs();
     } else {
@@ -43,16 +83,15 @@ function populateReimbs() {
     while (tbody.firstChild) {
         tbody.removeChild(tbody.firstChild);
     }
-
+    let id = 0;
     reimbs.forEach(function (r) {
-
         let tr = document.createElement('tr');
-        let rowAmount = document.createElement('td');
-        rowAmount.innerHTML = r.amount ? `$ ${r.amount}` : 'undefined';
-        tr.appendChild(rowAmount);
         let rowAuthor = document.createElement('td');
         rowAuthor.innerHTML = r.author ? r.author.fullName : 'undefined';
         tr.appendChild(rowAuthor);
+        let rowAmount = document.createElement('td');
+        rowAmount.innerHTML = r.amount ? `$ ${r.amount.toFixed(2)}` : 'undefined';
+        tr.appendChild(rowAmount);
         let rowType = document.createElement('td');
         rowType.innerHTML = r.type ? r.type : 'undefined';
         tr.appendChild(rowType);
@@ -62,25 +101,77 @@ function populateReimbs() {
         let rowStatus = document.createElement('td');
         rowStatus.innerHTML = r.status ? r.status : 'undefined';
         tr.appendChild(rowStatus);
+        let rowReceipt = document.createElement('td');
+        rowReceipt.innerHTML = r.receipt ? '✓' : '✗';
+        tr.appendChild(rowReceipt);
         tr.addEventListener('click', populateViewer);
         tr.style.cursor = 'pointer';
         tr.setAttribute('data-bs-toggle', 'modal');
         tr.setAttribute('data-bs-target', '#reimbView');
         tbody.appendChild(tr);
-        tr.name = r.id;
+        tr.id = id;
+        id++;
     });
 }
 
+async function resolveReimb(event) {
+    let resolvedId = reimbToView.id;
+    let resolvedStatus = event.target.value;
+    let resolveResponse = await fetch(`${apiUrl}/reimbursements`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            'id': `${resolvedId}`,
+            'status': `${resolvedStatus}`
+        })
+    });
+
+    if (resolveResponse.status >= 200 && resolveResponse.status < 300) {
+        getReimbs();
+    } else {
+        console.log('Unable to complete request.');
+    }
+}
+
 function populateViewer(event) {
-    let reimbToView = reimbs[event.target.parentNode.name];
+    reimbToView = reimbs[event.target.parentNode.id];
+    console.log(reimbToView);
     document.getElementById('viewAuthor').innerHTML = reimbToView.author.fullName ? reimbToView.author.fullName : '—';
     document.getElementById('viewResolver').innerHTML = reimbToView.resolver.fullName ? reimbToView.resolver.fullName : '—';
     document.getElementById('viewSubmitted').innerHTML = reimbToView.submitted ? formatDate(reimbToView.submitted, '  ') : '—';
     document.getElementById('viewResolved').innerHTML = reimbToView.resolved ? formatDate(reimbToView.resolved, '  ') : '—';
-    document.getElementById('viewAmount').innerHTML = reimbToView.amount ? `$ ${reimbToView.amount}` : '—';
+    document.getElementById('viewAmount').innerHTML = reimbToView.amount ? `$ ${reimbToView.amount.toFixed(2)}` : '—';
     document.getElementById('viewType').innerHTML = reimbToView.type ? reimbToView.type : '—';
     document.getElementById('viewStatus').innerHTML = reimbToView.status ? reimbToView.status : '—';
     document.getElementById('viewDescription').innerHTML = reimbToView.description ? reimbToView.description : '—';
+    let recCont = document.getElementById('viewReceiptContainer');
+    if (reimbToView.receipt) {
+        document.getElementById('viewReceipt').src = "data:image/*,.pdf;base64," + reimbToView.receipt;
+        recCont.style.visibility = 'visible';
+        recCont.style.display = 'inline';
+    } else {
+        recCont.style.visibility = 'hidden';
+        recCont.style.display = 'none';
+    }
+
+    let approveB = document.getElementById('approved');
+    let denyB = document.getElementById('denied');
+    if (principal.role === 'MANAGER' && reimbToView.status === 'PENDING') {
+        approveB.style.visibility = 'visible';
+        approveB.style.display = 'inline';
+        approveB.addEventListener('click', resolveReimb);
+        denyB.style.visibility = 'visible';
+        denyB.style.display = 'inline';
+        denyB.addEventListener('click', resolveReimb);
+    } else {
+        approveB.style.visibility = 'hidden';
+        approveB.style.display = 'none';
+        denyB.style.visibility = 'hidden';
+        denyB.style.display = 'none';
+    }
 }
 
 function sortReimbs(event) {
@@ -114,6 +205,10 @@ function sortReimbs(event) {
 
         case 'status':
             reimbs = reimbs.sort(ascend ? compareStA : compareStD);
+            break;
+
+        case 'receipt':
+            reimbs = reimbs.sort(ascend ? compareRA : compareRD);
             break;
 
         default:
@@ -162,4 +257,22 @@ function compareStA(a, b) {
 }
 function compareStD(a, b) {
     return ('' + b.status).localeCompare(a.status);
+}
+function compareRA(a, b) {
+    if (a.receipt && !b.receipt) {
+        return 1;
+    }
+    if (!a.receipt && b.receipt) {
+        return -1;
+    }
+    return 0;
+}
+function compareRD(a, b) {
+    if (a.receipt && !b.receipt) {
+        return -1;
+    }
+    if (!a.receipt && b.receipt) {
+        return 1;
+    }
+    return 0;
 }

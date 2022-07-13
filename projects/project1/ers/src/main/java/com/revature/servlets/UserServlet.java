@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dtos.UserDTO;
-import com.revature.exceptions.UserNotFoundException;
+import com.revature.exceptions.NotFoundException;
 import com.revature.models.User;
 import com.revature.services.UserService;
 import com.revature.util.CorsFix;
@@ -63,7 +63,7 @@ public class UserServlet extends HttpServlet {
 				pw.write(om.writeValueAsString(uDTO));
 
 				res.setStatus(200);
-			} catch (UserNotFoundException e) {
+			} catch (NotFoundException e) {
 				res.setStatus(404);
 				e.printStackTrace();
 			}
