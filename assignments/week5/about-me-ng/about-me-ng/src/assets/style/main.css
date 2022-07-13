@@ -1,0 +1,101 @@
+body {
+    background-color: aqua;
+    margin: 0px;
+    padding: 10px;
+    font-family: fantasy;
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+
+header {
+    background-color: rgba(0, 0, 0, 30%);
+    border-radius: 20px;
+    color: rgba(0, 0, 0, 70%);
+    padding: 30px;
+    text-align: center;
+    font-size: xx-large;
+    font-weight: 300;
+    letter-spacing: 2px;
+
+}
+
+nav {
+    background-color: rgb(100, 100, 100);
+    color: white;
+    border-radius: 20px;
+    text-align: center;
+}
+
+nav ul {
+    list-style-type: none;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+nav li {
+    display: inline;
+    padding: 10px;
+}
+
+nav a {
+    text-decoration: none;
+    padding: 20px;
+    color: white;
+}
+
+nav a:hover {
+    background-color: darkgray;
+}
+
+main {
+    background-color: rgba(255, 255, 255, 80%);
+    padding: 10px;
+    border-radius: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+main div {
+    max-width: 100%;
+    overflow: hidden;
+}
+div div {
+    max-width: 50%;
+    float: left;
+    padding: 10px;
+}
+
+img {
+    max-width: 100%;
+    max-height: 500px;
+    border-radius: 20px;
+}
+
+#response {
+    visibility: hidden;
+}
+
+footer {
+    background-color: rgba(0, 0, 0, 50%);
+    border-radius: 20px;
+    color: aqua;
+    padding: 30px;
+    text-align: center;
+    font-size:small;
+    letter-spacing: 2px;
+}
+.truth,.lie {
+    padding: 5px;
+}
+.truth:hover,.lie:hover {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: larger;
+    cursor: pointer;
+}
+.lie:hover {
+    background-color: green;
+}
+.truth:hover {
+    background-color: red;
+}
