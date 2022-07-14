@@ -22,6 +22,10 @@ public class UserService {
 		return createdUser;
 	}
 	
+	public User updateUser(User u) {
+		return ud.updateUser(u);
+	}
+	
 	public List<User> getUsers(){
 		return ud.retrieveUsers();
 	}

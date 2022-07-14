@@ -86,10 +86,11 @@ p {
   background: #A11692;
   z-index: 99;
 }
-.iconbutton i{
-  display:flex;
-  align-items:center;
-  justify-content:center;
+
+.iconbutton i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100%;
-  color:white;
-  }
+  color: white;
+}

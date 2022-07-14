@@ -89,8 +89,14 @@ public class UserHibernate implements UserDAO {
 
 	@Override
 	public User updateUser(User u) {
-		// TODO Auto-generated method stub
-		return null;
+		try (Session s = HibernateUtil.getSessionFactory().openSession()) {
+			Transaction tx = s.beginTransaction();
+			s.update("User", u);
+			tx.commit();
+		} catch (ConstraintViolationException e) {
+			// log it
+		}
+		return u;
 	}
 
 }
