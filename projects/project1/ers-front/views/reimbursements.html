@@ -129,7 +129,7 @@
                             <div class="form-group">
                                 <label for="newReceipt">Include an image of your receipt (Optional)</label>
                                 <input type="file" class="form-control" id="newReceipt" accept="image/*,.pdf"
-                                    name="newReceipt" onchange="onImageChange(event);">
+                                    name="newReceipt">
                             </div>
                             <div class="form-group">
                                 <textarea class="form-control" id="newDescription"
@@ -141,7 +141,7 @@
                 <div class="modal-footer d-flex">
                     <button id="cancelRequest" type="button" class="btn btn-secondary"
                         data-bs-dismiss="modal">Cancel</button>
-                    <button id="submitRequest" type="button" class="btn btn-primary">Submit</button>
+                    <button id="submitRequest" type="button" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
                 </div>
             </div>
         </div>

@@ -46,7 +46,7 @@ public class ReimbursementService {
 		if (reimbs == null || reimbs.isEmpty()) {
 			throw new NotFoundException();
 		}
-		log.info("Retrived " + reimbs.size() + " reimbursements for author: " + u);
+		log.info("Retrieved " + reimbs.size() + " reimbursements for author: " + u);
 		return rd.retrieveReimbursementsByAuthor(u);
 	}
 

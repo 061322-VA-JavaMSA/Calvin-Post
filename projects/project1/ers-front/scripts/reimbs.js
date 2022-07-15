@@ -128,7 +128,8 @@ async function addReimb() {
     let reqAmount = document.getElementById('newAmount').value;
     let reqType = document.getElementById('newType').value;
     let reqDesc = document.getElementById('newDescription').value;
-    let reqReceipt = document.getElementById('newType').value;
+    let reqReceipt = getImage();
+    console.log(reqReceipt);
 
     let submitResponse = await fetch(`${apiUrl}/reimbursements`, {
         method: 'POST',
@@ -153,7 +154,7 @@ async function addReimb() {
 }
 
 function clearRequestForm() {
-    document.getElementById('newRequestForm').resest();
+    document.getElementById('newRequestForm').reset();
 }
 
 async function getReimbs() {
@@ -183,7 +184,7 @@ function populateReimbs() {
         }
     });
     document.getElementById('showForUser').innerHTML = selectedUser ? `Requests from ${selectedUser.fullName}` : `Requests from all employees`;
-    document.getElementById('showCount').innerHTML = `Showing ${filteredReimbs.length} results`;
+    document.getElementById('showCount').innerHTML = filteredReimbs ? `Showing ${filteredReimbs.length} results` : 'No results';
     filteredReimbs.forEach(function (r) {
         let tr = document.createElement('tr');
         let rowAuthor = document.createElement('td');
@@ -249,7 +250,7 @@ function populateViewer(event) {
     document.getElementById('viewDescription').innerHTML = reimbToView.description ? reimbToView.description : '—';
     let recCont = document.getElementById('viewReceiptContainer');
     if (reimbToView.receipt) {
-        document.getElementById('viewReceipt').src = "data:image/*,.pdf;base64," + reimbToView.receipt;
+        showImage();
         recCont.style.visibility = 'visible';
         recCont.style.display = 'inline';
     } else {

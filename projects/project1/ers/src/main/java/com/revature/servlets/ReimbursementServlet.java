@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,12 +17,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dtos.ReimbursementDTO;
+import com.revature.email.ConfirmationEmail;
+import com.revature.email.ResolvedEmail;
 import com.revature.exceptions.NotCreatedException;
 import com.revature.exceptions.NotFoundException;
 import com.revature.models.ReimbStatus;
@@ -116,6 +122,7 @@ public class ReimbursementServlet extends HttpServlet {
 				reimbToAdd.setReimbStatus(status);
 				try {
 					rs.createReimbursement(reimbToAdd);
+//					new ConfirmationEmail(reimbToAdd);
 					res.setStatus(201);
 				} catch (NotCreatedException e) {
 					log.error(e.getMessage());
@@ -159,6 +166,7 @@ public class ReimbursementServlet extends HttpServlet {
 				reimbToUpdate.setReimbStatus(status);
 
 				rs.updateReimbursement(reimbToUpdate);
+//				new ResolvedEmail(reimbToUpdate);
 				res.setStatus(200);
 			} catch (NotFoundException e) {
 				res.sendError(404);
