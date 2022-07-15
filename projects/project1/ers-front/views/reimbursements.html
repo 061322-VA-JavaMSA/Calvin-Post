@@ -27,6 +27,46 @@
     </nav>
     <main class="container-fluid mx-auto " style="padding: 0 7.5em;">
         <br>
+        <div class="container-fluid" style="vertical-align:middle">
+            <div class="row">
+                <div class="col-md-5">
+                    <h4 id="showForUser">Requests from all employees</h4>
+                    <h4 id="showCount">Showing -- results</h4>
+                </div>
+                <div class="col-md-3">
+                    <input id="searchBar" type="text" placeholder="Search">
+                </div>
+                <div class="col-md-2">
+                    <h5>Type</h5>
+                    <input type="radio" id="tAll" name="fType" value="" checked="checked">
+                    <label for="showAll">All</label>
+                    <br>
+                    <input type="radio" id="tFood" name="fType" value="food">
+                    <label for="showAll">Food</label>
+                    <br>
+                    <input type="radio" id="tLodging" name="fType" value="lodging">
+                    <label for="showAll">Lodging</label>
+                    <br>
+                    <input type="radio" id="tTravel" name="fType" value="travel">
+                    <label for="showAll">Travel</label>
+                    <br>
+                    <input type="radio" id="tOther" name="fType" value="other">
+                    <label for="showAll">Other</label>
+                </div>
+                <div class="col-md-2">
+                    <h5>Status</h5>
+                    <input type="radio" id="sAll" name="fStatus" value="" checked="checked">
+                    <label for="showAll">All</label>
+                    <br>
+                    <input type="radio" id="sPending" name="fStatus" value="pending">
+                    <label for="showAll">Pending</label>
+                    <br>
+                    <input type="radio" id="sResolved" name="fStatus" value="resolved">
+                    <label for="showAll">Resolved</label>
+                </div>
+            </div>
+        </div>
+        <br>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -174,10 +214,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="approved" type="button" class="btn btn-primary" data-bs-dismiss="modal" style="background-color:lightgreen"
-                            value="APPROVED">Approve</button>
-                        <button id="denied" type="button" class="btn btn-primary" data-bs-dismiss="modal" style="background-color:red"
-                            value="DENIED">Deny</button>
+                        <button id="approved" type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                            style="background-color:lightgreen" value="APPROVED">Approve</button>
+                        <button id="denied" type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                            style="background-color:red" value="DENIED">Deny</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>

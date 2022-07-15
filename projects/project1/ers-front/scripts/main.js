@@ -23,6 +23,10 @@ if (principalString) {
     });
 }
 
+function includesIgnoreCase(value, regex) {
+    return value.toString().toUpperCase().includes(regex.toString().toUpperCase());
+}
+
 async function logout() {
 
     let response = await fetch(`${apiUrl}/auth`, {

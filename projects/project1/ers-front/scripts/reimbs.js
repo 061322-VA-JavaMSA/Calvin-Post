@@ -1,6 +1,18 @@
 if (!principal) {
     window.location.href = "./index.html";
 }
+let selectedUser = null;
+if (principal.role === 'MANAGER') {
+    let selUserString = sessionStorage.getItem('selectedUser');
+    if (selUserString) {
+        selectedUser = JSON.parse(selUserString);
+    }
+} else if (principal.role === 'EMPLOYEE') {
+    selectedUser = principal;
+}
+window.onbeforeunload = function () {
+    sessionStorage.removeItem('selectedUser');
+};
 if (principal.role === 'EMPLOYEE') {
     document.getElementById('newReimbButton').style.visibility = 'visible';
     document.getElementById('newReimbButton').style.display = 'inline';
@@ -8,11 +20,20 @@ if (principal.role === 'EMPLOYEE') {
     document.getElementById('newReimbButton').style.visibility = 'hidden';
     document.getElementById('newReimbButton').style.display = 'none';
 }
-
-window.onload = getReimbs;
+if (principal) {
+    getReimbs();
+}
 let reimbs;
 let ascend = true;
 let lastClick;
+
+let searchBar = document.getElementById('searchBar');
+searchBar.addEventListener('input', populateReimbs);
+searchBar.addEventListener('propertychange', populateReimbs);
+let fStatus = document.getElementsByName('fStatus');
+fStatus.forEach(rad => rad.addEventListener('change', populateReimbs));
+let fType = document.getElementsByName('fType');
+fType.forEach(rad => rad.addEventListener('change', populateReimbs));
 
 let amount = document.getElementById('amount');
 amount.addEventListener('click', sortReimbs);
@@ -32,6 +53,76 @@ let cancelRequest = document.getElementById('cancelRequest');
 cancelRequest.addEventListener('click', clearRequestForm);
 
 let reimbToView;
+
+function matchesType(reimb) {
+    switch (document.querySelector('input[name="fType"]:checked').value) {
+        case '':
+            return true;
+            break;
+
+        case 'food':
+            if (reimb.type == 'FOOD') {
+                return true;
+            }
+            break;
+
+        case 'lodging':
+            if (reimb.type == 'LODGING') {
+                return true;
+            }
+            break;
+
+        case 'travel':
+            if (reimb.type == 'TRAVEL') {
+                return true;
+            }
+            break;
+
+        case 'other':
+            if (reimb.type == 'OTHER') {
+                return true;
+            }
+            break;
+
+        default:
+            return true;
+    }
+    return false;
+}
+
+function matchesStatus(reimb) {
+    switch (document.querySelector('input[name="fStatus"]:checked').value) {
+        case '':
+            return true;
+            break;
+
+        case 'pending':
+            if (reimb.status == 'PENDING') {
+                return true;
+            }
+            break;
+
+        case 'resolved':
+            if (reimb.status == 'APPROVED' || reimb.status == 'DENIED') {
+                return true;
+            }
+            break;
+
+        default:
+            return true;
+    }
+    return false;
+}
+
+function matchesSearch(reimb) {
+    if (searchBar.value) {
+        if (includesIgnoreCase(reimb.description, searchBar.value) || includesIgnoreCase(reimb.amount, searchBar.value) || includesIgnoreCase(reimb.submitted, searchBar.value) || includesIgnoreCase(reimb.type, searchBar.value) || includesIgnoreCase(reimb.author.fullName, searchBar.value)) {
+            return true;
+        }
+        return false;
+    }
+    return true;
+}
 
 async function addReimb() {
     let reqAmount = document.getElementById('newAmount').value;
@@ -66,7 +157,8 @@ function clearRequestForm() {
 }
 
 async function getReimbs() {
-    let reimbRes = await fetch(`${apiUrl}/reimbursements`, {
+    let requestUrl = selectedUser ? `${apiUrl}/reimbursements/${selectedUser.id}` : `${apiUrl}/reimbursements`;
+    let reimbRes = await fetch(requestUrl, {
         credentials: 'include'
     });
 
@@ -84,7 +176,15 @@ function populateReimbs() {
         tbody.removeChild(tbody.firstChild);
     }
     let id = 0;
+    let filteredReimbs = [];
     reimbs.forEach(function (r) {
+        if (matchesSearch(r) && matchesStatus(r) && matchesType(r)) {
+            filteredReimbs.push(r);
+        }
+    });
+    document.getElementById('showForUser').innerHTML = selectedUser ? `Requests from ${selectedUser.fullName}` : `Requests from all employees`;
+    document.getElementById('showCount').innerHTML = `Showing ${filteredReimbs.length} results`;
+    filteredReimbs.forEach(function (r) {
         let tr = document.createElement('tr');
         let rowAuthor = document.createElement('td');
         rowAuthor.innerHTML = r.author ? r.author.fullName : 'undefined';
