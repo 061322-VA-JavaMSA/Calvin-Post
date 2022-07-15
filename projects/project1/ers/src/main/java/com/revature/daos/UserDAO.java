@@ -2,6 +2,7 @@ package com.revature.daos;
 
 import java.util.List;
 
+import com.revature.models.Role;
 import com.revature.models.User;
 
 public interface UserDAO {
@@ -15,6 +16,8 @@ public interface UserDAO {
 	User retrieveUserByUsername(String username);
 	
 	User retrieveUserByEmail(String email);
+	
+	List<User> retrieveUsersByRole(Role r);
 
 	List<User> retrieveUsers();
 }

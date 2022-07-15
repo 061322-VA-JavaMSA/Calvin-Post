@@ -13,10 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dtos.UserDTO;
 import com.revature.exceptions.NotFoundException;
 import com.revature.models.User;
+import com.revature.services.RoleService;
 import com.revature.services.UserService;
 import com.revature.util.CorsFix;
 
@@ -25,6 +29,7 @@ public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private UserService us = new UserService();
 	private ObjectMapper om = new ObjectMapper();
+	private static Logger log = LogManager.getLogger(UserServlet.class);
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
@@ -34,22 +39,22 @@ public class UserServlet extends HttpServlet {
 		User principal = om.readValue(session.getAttribute("principal").toString(), User.class);
 		String pathInfo = req.getPathInfo();
 
-		if (pathInfo == null) {
-			if (true) {
-				List<User> users = us.getUsers();
+		if (pathInfo == null && principal.getRole().getRole().equals("MANAGER")) {
+			RoleService rs = new RoleService();
+			List<User> users;
+			try (PrintWriter pw = res.getWriter()) {
+				users = us.getUsersByRole(rs.getRole("EMPLOYEE"));
 				List<UserDTO> usersDTO = new ArrayList<>();
 
 				users.forEach(u -> usersDTO.add(new UserDTO(u)));
 
-				try (PrintWriter pw = res.getWriter();) {
-					pw.write(om.writeValueAsString(users));
-				}
-
-			} else {
-				res.sendError(401, "Unauthorized request.");
+				pw.write(om.writeValueAsString(usersDTO));
+			} catch (NotFoundException e) {
+				log.error(e.getMessage());
+				res.sendError(404, "Not found.");
 			}
 
-		} else {
+		} else if (principal.getRole().getRole().equals("EMPLOYEE")) {
 			pathInfo = pathInfo.substring(1);
 			if (Integer.parseInt(pathInfo) == principal.getId()) {
 				PrintWriter pw = res.getWriter();
@@ -65,10 +70,13 @@ public class UserServlet extends HttpServlet {
 
 					res.setStatus(200);
 				} catch (NotFoundException e) {
+					log.error(e.getMessage());
 					res.setStatus(404);
-					e.printStackTrace();
 				}
 			}
+		} else {
+			log.info("Sent error, 401 unauthorized.");
+			res.sendError(401, "Unauthorized request.");
 		}
 	}
 
@@ -121,6 +129,7 @@ public class UserServlet extends HttpServlet {
 				}
 
 			} else {
+				log.info("Sent error, 401 unauthorized.");
 				res.sendError(401, "Unauthorized.");
 			}
 

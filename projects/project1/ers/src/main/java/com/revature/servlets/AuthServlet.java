@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dtos.UserDTO;
 import com.revature.exceptions.AuthException;
@@ -22,6 +25,7 @@ public class AuthServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private AuthService as = new AuthService();
 	private ObjectMapper om = new ObjectMapper();
+	private static Logger log = LogManager.getLogger(AuthServlet.class);
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
@@ -49,6 +53,7 @@ public class AuthServlet extends HttpServlet {
 			}
 			
 		} catch (AuthException | NotFoundException e) {
+			log.error(e.getMessage());
 			res.sendError(400, "Unable to login.");
 		}
 	}

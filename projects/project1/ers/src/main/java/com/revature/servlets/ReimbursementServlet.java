@@ -16,11 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dtos.ReimbursementDTO;
 import com.revature.exceptions.NotCreatedException;
 import com.revature.exceptions.NotFoundException;
-import com.revature.exceptions.NotUpdatedException;
 import com.revature.models.ReimbStatus;
 import com.revature.models.ReimbType;
 import com.revature.models.Reimbursement;
@@ -28,13 +30,16 @@ import com.revature.models.User;
 import com.revature.services.ReimbursementService;
 import com.revature.services.StatusService;
 import com.revature.services.TypeService;
+import com.revature.services.UserService;
 import com.revature.util.CorsFix;
 
 public class ReimbursementServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	private ReimbursementService rs = new ReimbursementService();
+	private UserService us = new UserService();
 	private ObjectMapper om = new ObjectMapper();
+	private static Logger log = LogManager.getLogger(ReimbursementServlet.class);
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
@@ -45,24 +50,39 @@ public class ReimbursementServlet extends HttpServlet {
 		System.out.println(principal);
 		String pathInfo = req.getPathInfo();
 
-		if (pathInfo == null) {
-			if (principal != null && principal.getRole().getRole().equals("MANAGER")) {
+		if (pathInfo == null && principal.getRole().getRole().equals("MANAGER")) {
 
-				List<Reimbursement> reimbs = rs.getReimbursements();
-				List<ReimbursementDTO> reimbsDTO = new ArrayList<>();
-				reimbs.forEach(r -> reimbsDTO.add(new ReimbursementDTO(r)));
-				PrintWriter testWriter = res.getWriter();
-				testWriter.write(om.writeValueAsString(reimbsDTO));
-			} else if (principal != null && principal.getRole().getRole().equals("EMPLOYEE")) {
-				List<Reimbursement> reimbs = rs.getReimbursementsByAuthor(principal);
-				List<ReimbursementDTO> reimbsDTO = new ArrayList<>();
-				reimbs.forEach(r -> reimbsDTO.add(new ReimbursementDTO(r)));
-				PrintWriter testWriter = res.getWriter();
-				testWriter.write(om.writeValueAsString(reimbsDTO));
-			} else {
-				res.sendError(401, "Unauthorized.");
+			
+			try (PrintWriter pw = res.getWriter()) {
+			List<Reimbursement> reimbs = rs.getReimbursements();;
+			List<ReimbursementDTO> reimbsDTO = new ArrayList<>();
+			reimbs.forEach(r -> reimbsDTO.add(new ReimbursementDTO(r)));
+			pw.write(om.writeValueAsString(reimbsDTO));
+			} catch (NotFoundException e) {
+				log.error(e.getMessage());
 			}
+		} else if (principal.getRole().getRole().equals("MANAGER") || principal.getId() == Integer.parseInt(pathInfo.substring(1))) {
+			User requested = null;
+			try (PrintWriter pw = res.getWriter()) {
+				requested = us.getUserById(Integer.parseInt(pathInfo.substring(1)));
+			
+			List<Reimbursement> reimbs = rs.getReimbursementsByAuthor(requested);
+			List<ReimbursementDTO> reimbsDTO = new ArrayList<>();
+			reimbs.forEach(r -> reimbsDTO.add(new ReimbursementDTO(r)));
+			
+			pw.write(om.writeValueAsString(reimbsDTO));
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+				res.setStatus(400);
+			} catch (NotFoundException e) {
+				log.error(e.getMessage());
+				res.setStatus(404);
+			}
+		} else {
+			log.info("Sent error, 401 unauthorized.");
+			res.sendError(401, "Unauthorized.");
 		}
+
 	}
 
 	@Override
@@ -98,13 +118,15 @@ public class ReimbursementServlet extends HttpServlet {
 					rs.createReimbursement(reimbToAdd);
 					res.setStatus(201);
 				} catch (NotCreatedException e) {
-					res.sendError(400, "Unable to complete request.");
+					log.error(e.getMessage());
+					res.setStatus(400);
 				}
 			} catch (NotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e.getMessage());
+				res.setStatus(404);
 			}
 		} else {
+			log.info("Sent error, 401 unauthorized.");
 			res.sendError(401, "Unauthorized.");
 		}
 	}
@@ -142,6 +164,7 @@ public class ReimbursementServlet extends HttpServlet {
 				res.sendError(404);
 			}
 		} else {
+			log.info("Sent error, 401 unauthorized.");
 			res.sendError(401, "Unauthorized.");
 		}
 	}
